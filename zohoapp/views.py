@@ -1238,8 +1238,8 @@ def invoiceview(request):
     }
     return render(request,'invoiceview.html',context)
 
-@login_required(login_url='login')
 
+@login_required(login_url='login')
 def detailedview(request,id):
     inv_dat=invoice.objects.all()
     inv_master=invoice.objects.get(id=id)
@@ -3380,8 +3380,9 @@ def get_vendordet(request):
     vemail = vdr.vendor_email
     gstnum = vdr.gst_number
     gsttr = vdr.gst_treatment
-
-    return JsonResponse({'vendor_email' :vemail, 'gst_number' : gstnum,'gst_treatment':gsttr},safe=False)
+    address=vdr.baddress  + '' + vdr.bcity + ''+vdr.bstate +''+vdr.bzip+''+vdr.bcountry
+    print(address)
+    return JsonResponse({'vendor_email' :vemail, 'gst_number' : gstnum,'gst_treatment':gsttr,'address':address},safe=False)
 
 @login_required(login_url='login')
 def get_customerdet(request):
@@ -3692,3 +3693,129 @@ def recurbill_comment(request):
         r_bill.save()
 
         return HttpResponse({"message": "success"})
+
+#muhammed Ashiq 
+
+
+def create_purchase_order(request):
+    vendor=vendor_table.objects.all()
+    context={
+        'vendor':vendor,
+    }
+        
+    return render(request,'create_purchase_order.html',context)
+
+def itemdata_challan(request):
+    return JsonResponse({})
+
+def purchase_order(request):
+
+    return render(request,'purchase_order.html')
+
+
+def purchaseView(request):
+    vendor=vendor_table.objects.all()
+    
+    if not payment_terms.objects.filter(Terms='net 15').exists(): 
+       payment_terms(Terms='net 15',Days=15).save()
+    if not payment_terms.objects.filter(Terms='due end of month').exists():
+        payment_terms(Terms='due end of month',Days=60).save()
+    elif not  payment_terms.objects.filter(Terms='net 30').exists():
+        payment_terms(Terms='net 30',Days=30).save() 
+    
+    
+    context={
+        'vendor':vendor,
+        
+    }
+    return render(request,'purchase_order.html',context)
+
+
+@login_required(login_url='login')
+def add_vendor(request):
+    if request.method=="POST":
+        vendor_data=vendor_table()
+        vendor_data.salutation=request.POST['salutation']
+        vendor_data.first_name=request.POST['first_name']
+        vendor_data.last_name=request.POST['last_name']
+        vendor_data.company_name=request.POST['company_name']
+        vendor_data.vendor_display_name=request.POST['v_display_name']
+        vendor_data.vendor_email=request.POST['vendor_email']
+        vendor_data.vendor_wphone=request.POST['w_phone']
+        vendor_data.vendor_mphone=request.POST['m_phone']
+        vendor_data.skype_number=request.POST['skype_number']
+        vendor_data.designation=request.POST['designation']
+        vendor_data.department=request.POST['department']
+        vendor_data.website=request.POST['website']
+        vendor_data.gst_treatment=request.POST['gst']
+
+        x=request.POST['gst']
+        if x=="Unregistered Business-not Registered under GST":
+            vendor_data.pan_number=request.POST['pan_number']
+            vendor_data.gst_number="null"
+        else:
+            vendor_data.gst_number=request.POST['gst_number']
+            vendor_data.pan_number=request.POST['pan_number']
+
+        vendor_data.source_supply=request.POST['source_supply']
+        vendor_data.currency=request.POST['currency']
+        vendor_data.opening_bal=request.POST['opening_bal']
+        vendor_data.payment_terms=request.POST['payment_terms']
+
+        user_id=request.user.id
+        udata=User.objects.get(id=user_id)
+        vendor_data.user=udata
+        vendor_data.battention=request.POST['battention']
+        vendor_data.bcountry=request.POST['bcountry']
+        vendor_data.baddress=request.POST['baddress']
+        vendor_data.bcity=request.POST['bcity']
+        vendor_data.bstate=request.POST['bstate']
+        vendor_data.bzip=request.POST['bzip']
+        vendor_data.bphone=request.POST['bphone']
+        vendor_data.bfax=request.POST['bfax']
+
+        vendor_data.sattention=request.POST['sattention']
+        vendor_data.scountry=request.POST['scountry']
+        vendor_data.saddress=request.POST['saddress']
+        vendor_data.scity=request.POST['scity']
+        vendor_data.sstate=request.POST['sstate']
+        vendor_data.szip=request.POST['szip']
+        vendor_data.sphone=request.POST['sphone']
+        vendor_data.sfax=request.POST['sfax']
+        vendor_data.save()
+# .......................................................adding to remaks table.....................
+        vdata=vendor_table.objects.get(id=vendor_data.id)
+        vendor=vdata
+        rdata=remarks_table()
+        rdata.remarks=request.POST['remark']
+        rdata.user=udata
+        rdata.vendor=vdata
+        rdata.save()
+
+
+#  ...........................adding multiple rows of table to model  ........................................................       
+        salutation =request.POST.getlist('salutation[]')
+        first_name =request.POST.getlist('first_name[]')
+        last_name =request.POST.getlist('last_name[]')
+        email =request.POST.getlist('email[]')
+        work_phone =request.POST.getlist('wphone[]')
+        mobile =request.POST.getlist('mobile[]')
+        skype_number =request.POST.getlist('skype[]')
+        designation =request.POST.getlist('designation[]')
+        department =request.POST.getlist('department[]') 
+        vdata=vendor_table.objects.get(id=vendor_data.id)
+        vendor=vdata
+       
+
+        if len(salutation)==len(first_name)==len(last_name)==len(email)==len(work_phone)==len(mobile)==len(skype_number)==len(designation)==len(department):
+            mapped2=zip(salutation,first_name,last_name,email,work_phone,mobile,skype_number,designation,department)
+            mapped2=list(mapped2)
+            print(mapped2)
+            for ele in mapped2:
+                created = contact_person_table.objects.get_or_create(salutation=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
+                         work_phone=ele[4],mobile=ele[5],skype_number=ele[6],designation=ele[7],department=ele[8],user=udata,vendor=vendor)
+        
+       
+                 
+        return redirect('create_purchase_order')
+        

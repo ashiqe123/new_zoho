@@ -180,8 +180,11 @@ urlpatterns = [
     path('recurbill_comment',views.recurbill_comment,name = "recurbill_comment"),
     
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
-    
-    
+    ## Muhammed Ashiq
+    path('create_purchase_order',views.create_purchase_order,name='create_purchase_order'),
+    path('itemdata_challan',views.itemdata_challan,name='itemdata_challan'),
+    path('purchaseView',views.purchaseView,name='purchaseView'),
+    path('purchase_order',views.purchase_order,name='purchase_order'),
     
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
