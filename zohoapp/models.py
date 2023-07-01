@@ -441,5 +441,51 @@ class recurring_bills_items (models.Model):
     amount = models.FloatField(null=True,blank=True)
     
 
+class Purchase_Order(models.Model):
 
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    company = models.ForeignKey(company_details,on_delete=models.CASCADE,null=True,blank=True)
+    Pur_no = models.CharField(max_length=100,null=True,blank=True)
+    Org_name = models.CharField(max_length=100,null=True,blank=True)
+    Org_address = models.CharField(max_length=100,null=True,blank=True)
+    Org_gst = models.CharField(max_length=100,null=True,blank=True)
+
+    source_supply = models.CharField(max_length=100,null=True,blank=True)
+    vendor_name = models.CharField(max_length=100,null=True,blank=True)
+    vendor_mail = models.CharField(max_length=100,null=True,blank=True)
+    vendor_gst_traet = models.CharField(max_length=100,null=True,blank=True)
+    vendor_gst_no = models.CharField(max_length=100,null=True,blank=True)
+
+    customer_name = models.CharField(max_length=100,null=True,blank=True)
+    customer_mail = models.CharField(max_length=100,null=True,blank=True)
+    customer_gst = models.CharField(max_length=100,null=True,blank=True)
+    customer_address = models.CharField(max_length=100,null=True,blank=True)
+    refer = models.CharField(max_length=100,null=True,blank=True)
+    Ord_date=models.DateField(null=True,blank=True)
+    exp_date=models.DateField(null=True,blank=True)
+    payment_terms = models.CharField(max_length=100,null=True,blank=True)
+    sub_total = models.FloatField(null=True,blank=True)
+    igst = models.FloatField(null=True,blank=True)
+    cgst = models.FloatField(null=True,blank=True)
+    sgst = models.FloatField(null=True,blank=True)
+    tax_amount =  models.FloatField(null=True,blank=True)
+    shipping_charge = models.FloatField(null=True,blank=True)
+    adjustment = models.FloatField(null=True,blank=True)
+    grand_total = models.FloatField(null=True,blank=True)
+    note = models.CharField(max_length=255,null=True,blank=True)
+    document=models.FileField(upload_to='doc/recurring_bills',null=True,blank=True)
+    comments = models.CharField(max_length=255,null=True,blank=True)
     
+
+class Purchase_Order_items (models.Model):
+
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
+    company = models.ForeignKey(company_details,on_delete=models.CASCADE,null=True,blank=True)
+    recur_bills = models.ForeignKey(recurring_bills,on_delete=models.CASCADE,null=True,blank=True)
+    item = models.CharField(max_length=100,null=True,blank=True)
+    account = models.CharField(max_length=100,null=True,blank=True)
+    quantity = models.IntegerField(null=True,blank=True)
+    rate=models.FloatField(null=True,blank=True)
+    tax = models.FloatField(null=True,blank=True)
+    discount = models.FloatField(null=True,blank=True)
+    amount = models.FloatField(null=True,blank=True)

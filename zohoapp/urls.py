@@ -181,11 +181,15 @@ urlpatterns = [
     
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     ## Muhammed Ashiq
-    path('create_purchase_order',views.create_purchase_order,name='create_purchase_order'),
-    path('itemdata_challan',views.itemdata_challan,name='itemdata_challan'),
     path('purchaseView',views.purchaseView,name='purchaseView'),
-    path('purchase_order',views.purchase_order,name='purchase_order'),
-    
+  
+    path('create_purchase_order',views.create_purchase_order,name='create_purchase_order'),
+    path('purchase_vendor',views.purchase_vendor,name='purchase_vendor'),
+    path('purchase_customer',views.purchase_customer,name='purchase_customer'),
+    path('customer_dropdown',views.customer_dropdown,name='customer_dropdown'),
+
+  
+
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
