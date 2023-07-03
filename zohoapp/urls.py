@@ -187,6 +187,11 @@ urlpatterns = [
     path('purchase_vendor',views.purchase_vendor,name='purchase_vendor'),
     path('purchase_customer',views.purchase_customer,name='purchase_customer'),
     path('customer_dropdown',views.customer_dropdown,name='customer_dropdown'),
+    path('payment_dropdown',views.payment_dropdown,name='payment_dropdown'),
+    path('purchase_pay',views.purchase_pay,name='purchase_pay'),
+    path('customer_det',views.customer_det,name='customer_det'),
+
+
 
   
 

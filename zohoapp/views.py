@@ -125,7 +125,13 @@ def base(request):
             Purchase(Account_type='EXPENCES',Account_name='Labour Charge',Account_desc='Labour Exp').save()
     if not Purchase.objects.filter(Account_name='Raw Meterials').exists():
             Purchase(Account_type='EXPENCES',Account_name='Raw Meterials',Account_desc='Raw Meterials Exp').save()
-
+    u = User.objects.get(id = request.user.id)
+    if not payment_terms.objects.filter(Terms='net 15').exists(): 
+       payment_terms(Terms='net 15',Days=15,user=u).save()
+    if not payment_terms.objects.filter(Terms='due end of month').exists():
+        payment_terms(Terms='due end of month',Days=60,user=u).save()
+    if not  payment_terms.objects.filter(Terms='net 30').exists():
+        payment_terms(Terms='net 30',Days=30,user=u).save() 
     company = company_details.objects.get(user = request.user)
     context = {
                 'company' : company
@@ -3390,13 +3396,13 @@ def get_customerdet(request):
     company= company_details.objects.get(user = request.user)
 
     name = request.POST.get('name')
-    # print(name)
+    print(name)
 
-    vdr = customer.objects.get(user=company.user_id,customerName=name.strip())
+    vdr = customer.objects.get(user=company.user_id,customerName=name)
     email = vdr.customerEmail
     gstin = 0
     gsttr = vdr.GSTTreatment
-
+    print(email)
     return JsonResponse({'customer_email' :email, 'gst_treatment':gsttr, 'gstin': gstin},safe=False)
 
 @login_required(login_url='login')
@@ -3489,7 +3495,7 @@ def pay_dropdown(request):
     options = {}
     option_objects = payment_terms.objects.filter(user = user)
     for option in option_objects:
-        options[option.id] = option.Terms
+        options[option.id] = option.Terms + str(option.Days)
 
     return JsonResponse(options)
 
@@ -3700,11 +3706,21 @@ def create_purchase_order(request):
     vendor=vendor_table.objects.all()
     cust=customer.objects.filter(user = request.user)
     payment=payment_terms.objects.all()
-
+    item=AddItem.objects.all()
+    account=Account.objects.all()
+    unit=Unit.objects.all()
+    sales=Sales.objects.all()
+    purchase=Purchase.objects.all()
     context={
         'vendor':vendor,
         'customer':cust,
         'payment':payment,
+        'item':item,
+        'account':account,
+        'units':unit,
+        'sales':sales,
+        'purchase':purchase,
+        
     }
         
     return render(request,'create_purchase_order.html',context)
@@ -3713,12 +3729,6 @@ def create_purchase_order(request):
 
 def purchaseView(request):
 
-    if not payment_terms.objects.filter(Terms='net 15').exists(): 
-       payment_terms(Terms='net 15',Days=15).save()
-    if not payment_terms.objects.filter(Terms='due end of month').exists():
-        payment_terms(Terms='due end of month',Days=60).save()
-    elif not  payment_terms.objects.filter(Terms='net 30').exists():
-        payment_terms(Terms='net 30',Days=30).save() 
     
     
     return render(request,'purchase_order.html')
@@ -3874,12 +3884,13 @@ def purchase_vendor(request):
 def purchase_customer(request):
     if request.user.is_authenticated:
         if request.method=='POST':
-            type=request.POST.get('type')
+            tax=request.POST.get('tax')
+            type=request.POST.get('title')
             first=request.POST['firstname']
             last=request.POST['lastname']
-            txtFullName=request.POST['display_name']
+            txtFullName= type + request.POST['display_name']
             
-            
+            itemtype=request.POST.get('itemtype')
             cpname=request.POST['company_name']
             
             email=request.POST.get('email')
@@ -3892,7 +3903,6 @@ def purchase_customer(request):
 
             gstt=request.POST.get('gsttype')
             posply=request.POST.get('placesupply')
-            tax1=request.POST.get('tax1')
             crncy=request.POST.get('currency')
             obal=request.POST.get('openingbalance')
 
@@ -3917,11 +3927,11 @@ def purchase_customer(request):
             adress2=addres
             u = User.objects.get(id = request.user.id)
 
-          
-            ctmr=customer(customerName=txtFullName,customerType=type,
+            print(tax)
+            ctmr=customer(customerName=txtFullName,customerType=itemtype,
                         companyName=cpname,customerEmail=email,customerWorkPhone=wphone,
                          customerMobile=mobile,skype=skname,designation=desg,department=dept,
-                           website=wbsite,GSTTreatment=gstt,placeofsupply=posply, Taxpreference=tax1,
+                           website=wbsite,GSTTreatment=gstt,placeofsupply=posply, Taxpreference=tax,
                              currency=crncy,OpeningBalance=obal,PaymentTerms=pterms,
                                 PriceList=plst,PortalLanguage=plang,Facebook=fbk,Twitter=twtr
                                  ,country=ctry,Address1=addres,Address2=adress2,
@@ -3943,3 +3953,46 @@ def customer_dropdown(request):
         options[option.id] = option.customerName
 
     return JsonResponse(options)
+@login_required(login_url='login')
+def purchase_pay(request):
+    
+    company = company_details.objects.get(user = request.user)
+
+    if request.method=='POST':
+
+        name=request.POST.get('name')
+        days=request.POST.get('days')
+        
+        u = User.objects.get(id = request.user.id)
+
+        pay = payment_terms(Terms=name, Days=days, user = u)
+        pay.save()
+
+        return HttpResponse({"message": "success"})
+@login_required(login_url='login')
+def payment_dropdown(request):
+
+    user = User.objects.get(id=request.user.id)
+
+    options = {}
+    option_objects = payment_terms.objects.filter(user = user)
+    for option in option_objects:
+        options[option.id] = option.Terms + str(option.Days)
+
+    return JsonResponse(options)
+
+@login_required(login_url='login')
+def customer_det(request):
+
+    company= company_details.objects.get(user = request.user)
+
+    name = request.POST.get('name')
+    
+
+    vdr = customer.objects.get(user=company.user_id,customerName=name)
+    email = vdr.customerEmail
+    gstin = 0
+    gsttr = vdr.GSTTreatment
+    adr=vdr.Address2
+    print(adr)
+    return JsonResponse({'customer_email' :email, 'gst_treatment':gsttr, 'gstin': gstin,'adr':adr,},safe=False)
