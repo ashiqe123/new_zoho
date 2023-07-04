@@ -3985,14 +3985,33 @@ def payment_dropdown(request):
 def customer_det(request):
 
     company= company_details.objects.get(user = request.user)
-
+    st=company.state
     name = request.POST.get('name')
-    
+    print(name)
 
     vdr = customer.objects.get(user=company.user_id,customerName=name)
     email = vdr.customerEmail
     gstin = 0
     gsttr = vdr.GSTTreatment
-    adr=vdr.Address2
-    print(adr)
-    return JsonResponse({'customer_email' :email, 'gst_treatment':gsttr, 'gstin': gstin,'adr':adr,},safe=False)
+    adres=vdr.Address2
+    print(email)
+    return JsonResponse({'customer_email' :email, 'gst_treatment':gsttr, 'gstin': gstin,'adres':adres,'st':st},safe=False)
+
+
+def itemdata_challan(request):
+    cur_user = request.user
+    user = User.objects.get(id=cur_user.id)
+    company = company_details.objects.get(user=user)
+    print(company.state)
+    id = request.GET.get('id')
+    
+
+    
+
+    item = AddItem.objects.get(id=id, user=user)
+    name=item.Name
+    rate = item.p_price
+    place = company.state
+
+    return JsonResponse({"status": " not", 'place': place, 'rate': rate})
+    return redirect('/')
