@@ -191,6 +191,8 @@ urlpatterns = [
     path('purchase_pay',views.purchase_pay,name='purchase_pay'),
     path('customer_det',views.customer_det,name='customer_det'),
     path('itemdata_challan',views.itemdata_challan,name='itemdata_challan'),
+    path('vendor_det',views.vendor_det,name='vendor_det'),
+
 
 
 

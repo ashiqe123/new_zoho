@@ -252,7 +252,7 @@
         </div>
 
         <div class="col-md-6">
-            <select name="srcofsupply" id="" class="form-control">
+            <select name="srcofsupply" id="srcofsupply" onclick="toggleDateInput()" class="form-control">
                 <option value="[AN] Andaman and Nicobar Islads">[AN] Andaman and Nicobar Islads</option>
                 <option value="[AD] Andhra Predhesh">[AD] Andhra Predhesh</option>
                 <option value="[AR] Arunachal Predesh">[AR] Arunachal Predesh</option>
@@ -392,7 +392,7 @@
 
       <div class="row mt-2">
         <div class="col-md-12 table-responsive-md mt-3">
-          <table class="table table-bordered" id="item_table">
+          <table class="table table-bordered" id="item_table" onclick='toggleDateInput()'>
             <thead>
               <tr>
                 <th>Item<br><a href="" data-toggle="modal" data-target="#newitem" class="text-capitalize">+ Item</a></th>
@@ -432,31 +432,31 @@
                           class=' text-right qty form-control' name='quantity[]'
                           value='0'>
                   </td>
-                  <td style="width: 13%;" class='text-right'><input type='number' id='rate1'
+                  <td style="width: 15%;" class='text-right'><input type='number' id='rate1'
                           class=' text-right rate form-control' name='rate[]'
                           value='0'>
                   </td>
-                  <td style="width: 13%;" class='text-right'><input type='number' id='discount1'
+                  <td style="width: 12%;" class='text-right'><input type='number' id='discount1'
                           class=' text-right discount form-control' name='discount[]'
                           value='0'>
                   </td>
                   <td style="width: 15%;" class='text-right'> <select name='tax[]' id='tax1'
                           class='form-control  text-right border-0 tax'>
-                          <optgroup label="GST">
+                          <optgroup class="text-center" label="GST">
                             <option value="0">Non Taxable</option>
-                            <option value="0">0% GST</option>
-                            <option value="5">5% GST</option>
-                            <option value="12">12% GST</option>
-                            <option value="18">18% GST</option>
-                            <option value="28">28% GST</option>
+                            <option value="0">0% GST(0%)</option>
+                            <option value="5">5.0% GST(5%)</option>
+                            <option value="12">12.0% GST(12%)</option>
+                            <option value="18">18.0% GST(18%)</option>
+                            <option value="28">28.0% GST(28%)</option>
                           </optgroup>
-                          <optgroup label="IGST">
+                          <optgroup  class="text-center" label="IGST">
                             <option value="0">Non Taxable</option>
-                            <option value="0">0% IGST</option>
-                            <option value="5">5% IGST</option>
-                            <option value="12">12% IGST</option>
-                            <option value="18">18% IGST</option>
-                            <option value="28">28% IGST</option>                  
+                            <option value="0">0% IGST(0%)</option>
+                            <option value="5">5.0% IGST(5%)</option>
+                            <option value="12">12.0% IGST(12%)</option>
+                            <option value="18">18.0% IGST(18%)</option>
+                            <option value="28">28.0% IGST(28%)</option>             
                             </optgroup>
                       </select></td>
                   <td style="display: none;">
@@ -469,6 +469,10 @@
                   <td class='text-center'><button type='button' id='del_btn1'
                           class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row'
                           style='width:30px'>X</button></td>
+                          <td class='text-center'>
+                            <button type='button' class='btn btn-transparent text-primary btn-sm btn-outline-primary rounded-circle clone-row' data-row=1 style='width:30px'><i class="fa fa-clone"></i>
+                            </button>
+                          </td>
  </tr>
       </tbody>
     </table>
@@ -517,15 +521,14 @@
                 </tr>
                 <tr>
                     <td>Shipping Charges</td>
-                    <td><input type="number" id="shipping"> <i class="fas fa-question  text-dark"></i></td>
+                    <td><input type="number" class="form-control " id="shipping" value="0"> </td>
                     <td><input type="text" id="shipping_charge" name="shipping_charge" step="any" value="0.00" 
                         class="form-control bg-transparent border-0 text-right shipping_charge  text-white"></td>
                 </tr>
                 <tr>
-                    <td>Adjustmment</td>
-                    <td><input type="number" id="adjustment"> <i class="fas fa-question"></i></td>
-                    <td><input type="text" id="adjustment_charge" name="adjustment_charge" step="any" value="0.00" 
-                        class="form-control bg-transparent border-0 text-right adjustment  text-white"> </td>
+                    <td></td>
+                    <td></td>
+                    <td> </td>
                 </tr>
                 <tr>
                     <th>Total ( &#x20B9; )</th>
@@ -2082,34 +2085,8 @@
 
 <script>
   
-  function toggleDateInput() {
-      var checkbox = document.getElementById("never-expire-checkbox");
-      var dateInput = document.getElementById("date2");
-      
-      if (checkbox.checked) {
-          dateInput.disabled = true;
-         
-          $("#terms").val("recpt");
-      } 
-      else {
-          dateInput.disabled = false;
-      }
-  }
 
-  $(document).ready(function() {
-    $('#terms').change(function() {
-      var va = $(this).val();
-      var checkbox = $('#never-expire-checkbox')[0];
-      if (va == 'recpt'){
-        checkbox.checked = true;
-        $('#date2')[0].disabled = true;
-      }
-      else{
-        checkbox.checked = false;
-        $('#date2').disabled = false;
-      }
-      });
-  });
+ 
 
 
 
@@ -2772,9 +2749,9 @@ function reloadAccount() {
 </script>
 
 <script>
-
+var rowCount = 1;
 $(document).ready(function () {
-  var rowCount = 1; // Counter for row IDs
+  // Counter for row IDs
 
   // Function to calculate the row amount
   function calculateRowAmount(row) {
@@ -2801,18 +2778,25 @@ $(document).ready(function () {
     $('#subtotal').val(subtotal.toFixed(2));
   }
 
-  // Function to calculate the grand total
-  function calculateGrandTotal() {
-    var grandTotal = 0;
-    var taxAmount = 0;
-    $('#item_table tbody tr').each(function () {
-      grandTotal += calculateRowAmount($(this));
-      taxAmount = parseFloat($(this).find('.taxamount').val());
-      grandTotal += taxAmount;
-    });
-    $('#grandtotal').val(grandTotal.toFixed(2));
-    $('#total_taxamount').val(taxAmount.toFixed(2));
-  }
+// Function to calculate the grand total
+function calculateGrandTotal() {
+  var grandTotal = 0;
+  var totalTaxAmount = 0;
+
+  $('#item_table tbody tr').each(function () {
+    var rowAmount = calculateRowAmount($(this));
+    grandTotal += rowAmount;
+    var taxAmount = parseFloat($(this).find('.taxamount').val());
+    grandTotal += taxAmount;
+    totalTaxAmount += taxAmount;
+  });
+  var shippingCharges = parseFloat($('#shipping').val());
+  grandTotal += shippingCharges;
+
+  $('#grandtotal').val(grandTotal.toFixed(2));
+  $('#total_taxamount').val(totalTaxAmount.toFixed(2));
+}
+
   $('#item_table').on('change', '.tax', function () {
     var row = $(this).closest('tr');
     calculateRowAmount(row);
@@ -2854,32 +2838,32 @@ $(document).ready(function () {
           <input type='number' id='qty${rowCount}' class='text-right qty form-control' name='quantity[]' value='0'>
         </td>
         
-        <td style="width: 13%;" class='text-right'>
+        <td style="width: 15%;" class='text-right'>
           <input type='number' id='rate${rowCount}' class='text-right rate form-control' name='rate[]' value='0'>
         </td>
         
-        <td style="width: 13%;" class='text-right'>
+        <td style="width: 12%;" class='text-right'>
           <input type='number' id='discount${rowCount}' class='text-right discount form-control' name='discount[]' value='0'>
         </td>
         
         <td style="width: 15%;" class='text-right'>
-          <select name='tax[]' id='tax${rowCount}' class='form-control text-right border-0 tax'>
-            <optgroup label="GST">
-              <option value="0">Non Taxable</option>
-               <option value="0">0% GST</option>
-                <option value="5">5% GST</option>
-                  <option value="12">12% GST</option>
-                    <option value="18">18% GST</option>
-                      <option value="28">28% GST</option>
+          <select name='tax[]'  id='tax${rowCount}' class='form-control text-right border-0 tax'>
+            <optgroup class="text-center" label="GST">
+                            <option value="0">Non Taxable</option>
+                            <option value="0">0% GST(0%)</option>
+                            <option value="5">5.0% GST(5%)</option>
+                            <option value="12">12.0% GST(12%)</option>
+                            <option value="18">18.0% GST(18%)</option>
+                            <option value="28">28.0% GST(28%)</option>
                           </optgroup>
-                      <optgroup label="IGST">
-                    <option value="0">Non Taxable</option>
-                  <option value="0">0% IGST</option>
-                <option value="5">5% IGST</option>
-               <option value="12">12% IGST</option>
-            <option value="18">18% IGST</option>
-          <option value="28">28% IGST</option>                  
-          </optgroup>
+                          <optgroup  class="text-center" label="IGST">
+                            <option value="0">Non Taxable</option>
+                            <option value="0">0% IGST(0%)</option>
+                            <option value="5">5.0% IGST(5%)</option>
+                            <option value="12">12.0% IGST(12%)</option>
+                            <option value="18">18.0% IGST(18%)</option>
+                            <option value="28">28.0% IGST(28%)</option>             
+                            </optgroup>
           </select>
         </td>
         
@@ -2894,11 +2878,14 @@ $(document).ready(function () {
         <td class='text-center'>
           <button type='button' id='del_btn${rowCount}' class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row' style='width:30px'>X</button>
         </td>
+        <td class='text-center'>
+        <button type='button' class='btn btn-transparent text-primary btn-sm btn-outline-primary rounded-circle clone-row' data-row='${rowCount}' style='width:30px'><i class="fa fa-clone"></i>
+</button>
+      </td>
       </tr>
     `;
     $('#item_table tbody').append(newRow);
-    calculateSubtotal();
-    calculateGrandTotal();
+    toggleDateInput();
   });
   $('#item_table').on('click', '.delete-row', function () {
     $(this).closest('tr').remove();
@@ -2907,15 +2894,74 @@ $(document).ready(function () {
   });
 
   // Input change event for quantity, rate, and discount
-  $('#item_table').on('input', '.qty, .rate, .discount', function () {
+  $('#item_table').on('input', '.qty, .rate, .discount,.tax', function () {
     var row = $(this).closest('tr');
     calculateRowAmount(row);
     calculateSubtotal();
     calculateGrandTotal();
+    toggleDateInput();
   });
+
+  $('#shipping').on('input', function () {
+    var shippingAmount = parseFloat($(this).val());
+    $('#shipping_charge').val(shippingAmount.toFixed(2));
+    calculateGrandTotal();
+  });
+// Event handler for clone button
+$('#item_table').on('click', '.clone-row', function() {
+  var rowToClone = $(this).closest('tr'); // Get the closest parent row
+  var clonedRow = rowToClone.clone(); // Clone the row
+  
+  // Generate a unique ID for the new row
+  var newRowId = 'row' + (rowCount + 1);
+  
+  // Update IDs of cloned elements
+  clonedRow.attr('id', newRowId);
+  clonedRow.find('[id^="item"]').attr('id', 'item' + (rowCount + 1));
+  clonedRow.find('[id^="account"]').attr('id', 'account' + (rowCount + 1));
+  clonedRow.find('[id^="tax"]').attr('id', 'tax' + (rowCount + 1));
+  
+  // Clone selected item
+  var selectedItem = rowToClone.find('.item_select').val();
+  clonedRow.find('.item_select').val(selectedItem);
+  
+  // Clone selected account
+  var selectedAccount = rowToClone.find('.acnt').val();
+  clonedRow.find('.acnt').val(selectedAccount);
+  
+  // Remove any selected options in the cloned row
+  var selectedTax = rowToClone.find('.tax').val();
+  clonedRow.find('.tax').val(selectedTax);
+  
+  // Append the cloned row to the table
+  $('#item_table tbody').append(clonedRow);
+  
+  rowCount++; // Increment row counter for the new cloned row
+  
+  calculateSubtotal();
+  calculateGrandTotal();
+});
 
 
 });
+
+function toggleDateInput() {
+      var checkbox = document.getElementById("srcofsupply");
+      var vale=checkbox.value;
+      
+      for (var i = 1; i <= rowCount; i++) {
+        var taxElement = $('#tax' + i);
+
+        if (vale === "[KL] Kerala") {
+            taxElement.find('optgroup[label="GST"]').show();
+            taxElement.find('optgroup[label="IGST"]').hide();
+        } else {
+            taxElement.find('optgroup[label="GST"]').hide();
+            taxElement.find('optgroup[label="IGST"]').show();
+        }
+    }
+  }
+
 </script>
 
 <script>

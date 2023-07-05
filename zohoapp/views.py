@@ -3923,7 +3923,7 @@ def purchase_customer(request):
             shipfax=request.POST.get('shipfax')
 
             sal=request.POST.get('title')
-            addres=street + shipcity + shipstate + bzip
+            addres=street +','+ shipcity+',' + shipstate+',' + bzip
             adress2=addres
             u = User.objects.get(id = request.user.id)
 
@@ -4015,3 +4015,20 @@ def itemdata_challan(request):
 
     return JsonResponse({"status": " not", 'place': place, 'rate': rate})
     return redirect('/')
+
+
+@login_required(login_url='login')
+def vendor_det(request):
+
+    company= company_details.objects.get(user = request.user)
+
+    fname = request.POST.get('fname')
+    lname = request.POST.get('lname')
+    id = request.POST.get('id')
+    vdr = vendor_table.objects.get(user=company.user_id,first_name = fname,last_name = lname,id=id)
+    vemail = vdr.vendor_email
+    gstnum = vdr.gst_number
+    gsttr = vdr.gst_treatment
+    address=vdr.baddress  + '' + vdr.bcity + ''+vdr.bstate +''+vdr.bzip+''+vdr.bcountry
+    print(address)
+    return JsonResponse({'vendor_email' :vemail, 'gst_number' : gstnum,'gst_treatment':gsttr,'address':address},safe=False)
