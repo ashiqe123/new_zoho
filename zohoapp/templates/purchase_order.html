@@ -7,7 +7,7 @@
   <div class="col-md-12 " style="width: 100%;">
     <div class="row mx-2">
         <div class="col-md-10"><a class="text-white" style="font-size: 2rem;">All Purchase Orders</a></div>
-        <div class="col-md-2 form-inline justify-content-end py-2" ><a style="color: #ccc;" class="btn btn-success " href="{% url 'create_purchase_order' %}"><i class="fa-solid fa-plus "></i>New</a>
+        <div class="col-md-2 form-inline justify-content-end py-2" ><a style="color: #ccc;" class="btn btn-success " href="{% url 'purchase_order' %}"><i class="fa-solid fa-plus "></i>New</a>
          
         </div>
       </div>   
@@ -17,27 +17,25 @@
     <thead>
       <tr>
         <th class="text-white">DATE</th>
-        <th class="text-white">INVOICE</th>
         <th class="text-white">ORDER NUMBER</th>
-        <th class="text-white">CUSTOMER NAME</th>
-        <th class="text-white">STATUS</th>
-        <th class="text-white">DUE DATE</th>
+        <th class="text-white">EXPECTED DELIVERY</th>
+        <th class="text-white">CUSTOMER NAME/ORGANISATION</th>
+        <th class="text-white">DELIVERY DATE</th>
         <th class="text-white">AMOUNT</th>
       </tr>
     </thead>
     <tbody>
-      {% for v in invoice %}
+      {% for v in pt %}
 
       <tr class="text-white">
 
-       <td onclick="location.href ='{% url 'detailedview' v.id %}' " > {{v.inv_date}}</td>
-        <td>{{v.invoice_no}}</td>
-        <td>{{v.order_no}}</td>
-        <td>{{v.customer.customerName}}</td>
-       <td>{{v.status}}</td>
-       <td>{{v.due_date}}</td>
-       <td>{{v.grandtotal}}</td>
-       <td><a style="border-radius: 50%;" class="btn btn-danger" href="{% url 'dele' v.id %}">delet</a></td>
+       <td onclick="location.href ='{% url 'purchase_bill_view' v.id %}' " > {{v.Ord_date}}</td>
+        <td>{{v.Pur_no}}</td>
+        <td>{{v.Ord_date}}</td>
+        <td>{{v.customer_name}} {{v.Org_name}}</td>
+        <td>{{v.exp_date}}</td>
+        <td>{{v.grand_total}}</td>
+        <td><a style="border-radius: 50%;" class="btn btn-danger" href="{% url 'purchase_delet' v.id %}">delet</a></td>
       </tr>
       {% endfor %}
     </tbody>

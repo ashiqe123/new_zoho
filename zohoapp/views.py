@@ -3702,7 +3702,7 @@ def recurbill_comment(request):
 
 #muhammed Ashiq 
 
-def create_purchase_order(request):
+def purchase_order(request):
     vendor=vendor_table.objects.all()
     cust=customer.objects.filter(user = request.user)
     payment=payment_terms.objects.all()
@@ -3728,10 +3728,14 @@ def create_purchase_order(request):
 
 
 def purchaseView(request):
-
+    purchase_table=Purchase_Order.objects.all()
+    purchase_order_table=Purchase_Order_items.objects.all()
     
-    
-    return render(request,'purchase_order.html')
+    context={
+        'pt':purchase_table,
+        'po_t':purchase_order_table,
+    }
+    return render(request,'purchase_order.html',context)
 
 
 @login_required(login_url='login')
@@ -4032,3 +4036,286 @@ def vendor_det(request):
     address=vdr.baddress  + '' + vdr.bcity + ''+vdr.bstate +''+vdr.bzip+''+vdr.bcountry
     print(address)
     return JsonResponse({'vendor_email' :vemail, 'gst_number' : gstnum,'gst_treatment':gsttr,'address':address},safe=False)
+
+
+@login_required(login_url='login')
+def purchase_unit(request):
+    
+    company = company_details.objects.get(user = request.user)
+
+    if request.method=='POST':
+
+        unit =request.POST.get('unit')
+        
+        u = User.objects.get(id = request.user.id)
+
+        unit = Unit(unit= unit)
+        unit.save()
+
+        return HttpResponse({"message": "success"})
+        
+@login_required(login_url='login')
+def purchase_unit_dropdown(request):
+
+    user = User.objects.get(id=request.user.id)
+
+    options = {}
+    option_objects = Unit.objects.all()
+    for option in option_objects:
+        options[option.id] = option.unit
+
+    return JsonResponse(options)
+
+
+@login_required(login_url='login')
+def purchase_item(request):
+
+    company = company_details.objects.get(user = request.user)
+
+    if request.method=='POST':
+        type=request.POST.get('type')
+        name=request.POST['name']
+        ut=request.POST['unit']
+        inter=request.POST['inter']
+        intra=request.POST['intra']
+        sell_price=request.POST.get('sell_price')
+        sell_acc=request.POST.get('sell_acc')
+        sell_desc=request.POST.get('sell_desc')
+        cost_price=request.POST.get('cost_price')
+        cost_acc=request.POST.get('cost_acc')      
+        cost_desc=request.POST.get('cost_desc')
+
+        history="Created by " + str(request.user)
+        user = User.objects.get(id = request.user.id)
+
+        item=AddItem(type=type,Name=name,p_desc=cost_desc,s_desc=sell_desc,s_price=sell_price,p_price=cost_price,
+                    user=user,creat=history,interstate=inter,intrastate=intra)
+
+        item.save()
+
+        it = AddItem.objects.get(id  = item.id)
+
+        if ut :
+            units=Unit.objects.get(id=ut)
+            it.unit = units
+            it.save()
+        if sell_acc:
+            sel=Sales.objects.get(id=sell_acc)
+            it.sales = sel
+            it.save()
+        if cost_acc:
+            cost=Purchase.objects.get(id=cost_acc)
+            it.purchase = cost
+            it.save()
+
+        return HttpResponse({"message": "success"})
+        
+@login_required(login_url='login')
+def purchase_item_dropdown(request):
+
+    user = User.objects.get(id=request.user.id)
+
+    options = {}
+    option_objects = AddItem.objects.all()
+    for option in option_objects:
+        options[option.id] = option.Name
+
+    return JsonResponse(options)
+
+@login_required(login_url='login')
+def purchase_account(request):
+
+    company = company_details.objects.get(user = request.user)
+
+
+    if request.method=='POST':
+        type=request.POST.get('actype')
+        name=request.POST['acname']
+        u = User.objects.get(id = request.user.id)
+
+        acnt=Account(accountType=type,accountName=name,user = u)
+
+        acnt.save()
+
+        return HttpResponse({"message": "success"})
+        
+@login_required(login_url='login')
+def purchase_account_dropdown(request):
+
+    user = User.objects.get(id=request.user.id)
+
+    options = {}
+    option_objects = Account.objects.filter(user = user)
+    for option in option_objects:
+        options[option.id] = option.accountName
+
+    return JsonResponse(options)
+
+
+
+@login_required(login_url='login')
+def create_Purchase_order(request):
+
+    company = company_details.objects.get(user = request.user)
+    if request.method == 'POST':
+        typ=request.POST.get('option')
+        print('yes')
+        print(typ)
+        if typ=='Organization':
+            vname = request.POST.get('vendor')
+            vmail = request.POST.get('email_inp')
+            vgst_t = request.POST.get('gst_trt_inp')
+            vgst_n = request.POST.get('gstin_inp')
+            
+            orgname = request.POST.get('orgName')
+            org_gst = request.POST.get('gstNumber')
+            org_address = request.POST.get('orgAddress')
+            
+            cname = request.POST.get('custom')
+            cmail = request.POST.get('custMail')
+            caddress = request.POST.get('custAddress')
+
+            src_supply = request.POST.get('srcofsupply')
+            po = request.POST['pur_ord']
+            ref = request.POST['ref']
+            terms = request.POST['terms']
+            start = request.POST.get('start_date')
+            end =  request.POST.get('end_date')
+            sub_total =request.POST['subtotal']
+            sgst=request.POST['sgst']
+            cgst=request.POST['cgst']
+            igst=request.POST['igst']
+            tax = request.POST['total_taxamount']
+            shipping_charge= request.POST['shipping_charge']
+            grand_total=request.POST['grandtotal']
+            note=request.POST['customer_note']
+            terms_con = request.POST['tearms_conditions']
+            u = User.objects.get(id = request.user.id)
+
+            purchase = Purchase_Order(vendor_name=vname,
+                                    vendor_mail=vmail,
+                                    vendor_gst_traet=vgst_t,
+                                    vendor_gst_no=vgst_n,
+                                    Org_name=orgname,
+                                    Org_address=org_address,
+                                    Org_gst=org_gst,
+                                    Pur_no=po,
+                                    ref=ref,
+                                    
+                                    source_supply=src_supply,
+                                    payment_terms = terms,
+                                    Ord_date = start,
+                                    exp_date = end,
+                                    sub_total=sub_total,
+                                    sgst=sgst,
+                                    cgst=cgst,
+                                    igst=igst,
+                                    tax_amount=tax,
+                                    shipping_charge = shipping_charge,
+                                    grand_total=grand_total,
+                                    note=note,
+                                    comments=terms_con,
+                                    company=company,
+                                    user = u,typ=typ  )
+            purchase.save()
+
+            p_bill = Purchase_Order.objects.get(id=purchase.id)
+
+            if len(request.FILES) != 0:
+                p_bill.document=request.FILES['file'] 
+                p_bill.save()
+                print('save')
+        else:
+            vname = request.POST.get('vendor')
+            vmail = request.POST.get('email_inp')
+            vgst_t = request.POST.get('gst_trt_inp')
+            vgst_n = request.POST.get('gstin_inp')
+            
+            orgname = request.POST.get('orgName')
+            org_gst = request.POST.get('gstNumber')
+            org_address = request.POST.get('orgAddress')
+            
+            cname = request.POST.get('custom')
+            cmail = request.POST.get('custMail')
+            caddress = request.POST.get('custAddress')
+
+            src_supply = request.POST.get('srcofsupply')
+            po = request.POST['pur_ord']
+            ref = request.POST['ref']
+            terms = request.POST['terms']
+            start = request.POST.get('start_date')
+            end =  request.POST.get('end_date')
+            sub_total =request.POST['subtotal']
+            sgst=request.POST['sgst']
+            cgst=request.POST['cgst']
+            igst=request.POST['igst']
+            tax = request.POST['total_taxamount']
+            shipping_charge= request.POST['shipping_charge']
+            grand_total=request.POST['grandtotal']
+            note=request.POST['customer_note']
+            terms_con = request.POST['tearms_conditions']
+            document = request.POST['file']
+            u = User.objects.get(id = request.user.id)
+
+            purchase = Purchase_Order(vendor_name=vname,
+                                    vendor_mail=vmail,
+                                    vendor_gst_traet=vgst_t,
+                                    vendor_gst_no=vgst_n,
+                                    customer_name = cname,
+                                    customer_mail=cmail,
+                                    Pur_no=po,
+                                    ref=ref,
+                                    customer_address=caddress,
+                                    source_supply=src_supply,
+                                    payment_terms = terms,
+                                    Ord_date = start,
+                                    exp_date = end,
+                                    sub_total=sub_total,
+                                    sgst=sgst,
+                                    cgst=cgst,
+                                    igst=igst,
+                                    tax_amount=tax,
+                                    shipping_charge = shipping_charge,
+                                    grand_total=grand_total,
+                                    note=note,
+                                    comments=terms_con,
+                                    company=company,
+                                    user = u,typ=typ)
+            purchase.save()
+
+            p_bill = Purchase_Order.objects.get(id=purchase.id)
+
+            if len(request.FILES) != 0:
+                p_bill.document=request.FILES['file'] 
+                p_bill.save()
+                print('save')
+        item = request.POST.getlist("item[]")
+        accounts = request.POST.getlist("account[]")
+        quantity = request.POST.getlist("quantity[]")
+        rate = request.POST.getlist("rate[]")
+        tax = request.POST.getlist("tax[]")
+        discount = request.POST.getlist("discount[]")
+        amount = request.POST.getlist("amount[]")
+
+        if len(item)== len(accounts) == len(quantity) == len(rate) == len(discount) == len(tax) == len(amount):
+            mapped = zip(item,accounts, quantity, rate,  tax,discount, amount)
+            mapped = list(mapped)
+            for ele in mapped:
+                
+
+                    created = Purchase_Order_items.objects.get_or_create(item = ele[0],account = ele[1],quantity=ele[2],rate=ele[3],tax=ele[4],discount = ele[5],amount=ele[6],user = u,company = company, PO = p_bill,)
+            
+            print('Done')
+            return redirect('purchase_order')
+    return redirect('purchaseView')
+
+def purchase_delet(request,id):
+    po=Purchase_Order.objects.get(id=id)
+    po.delete()
+    return redirect('purchaseView')
+
+    
+def purchase_bill_view(request,id):
+
+
+    return render(request, 'purchase_bill_view.html')

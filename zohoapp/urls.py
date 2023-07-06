@@ -183,7 +183,7 @@ urlpatterns = [
     ## Muhammed Ashiq
     path('purchaseView',views.purchaseView,name='purchaseView'),
   
-    path('create_purchase_order',views.create_purchase_order,name='create_purchase_order'),
+    path('purchase_order',views.purchase_order,name='purchase_order'),
     path('purchase_vendor',views.purchase_vendor,name='purchase_vendor'),
     path('purchase_customer',views.purchase_customer,name='purchase_customer'),
     path('customer_dropdown',views.customer_dropdown,name='customer_dropdown'),
@@ -192,7 +192,17 @@ urlpatterns = [
     path('customer_det',views.customer_det,name='customer_det'),
     path('itemdata_challan',views.itemdata_challan,name='itemdata_challan'),
     path('vendor_det',views.vendor_det,name='vendor_det'),
+    path('create_Purchase_order',views.create_Purchase_order,name='create_Purchase_order'),
+    path('purchase_unit',views.purchase_unit,name='purchase_unit'),
+    path('purchase_unit_dropdown',views.purchase_unit_dropdown,name='purchase_unit_dropdown'),
 
+    path('purchase_item',views.purchase_item,name='purchase_item'),
+    path('purchase_item_dropdown',views.purchase_item_dropdown,name='purchase_item_dropdown'),
+
+    path('purchase_account',views.purchase_account,name='purchase_account'),
+    path('purchase_account_dropdown',views.purchase_account_dropdown,name='purchase_account_dropdown'),
+    path('purchase_delet/<int:id>',views.purchase_delet,name='purchase_delet'),
+    path('purchase_bill_view/<int:id>',views.purchase_bill_view,name='purchase_bill_view'),
 
 
 

@@ -89,16 +89,16 @@
 
 <div class="container-fulid containerprof">
 
-  <div class="card radius-15 p-3">
+  <div class="card radius-15">
     <div class="card-body">
         <div class="card-title">
           <h2 class="mb-0 text-uppercase text-right"> New Purchase Order</h2>
         </div>
     </div>
   </div>
-
+  <div style="overflow-y: scroll; height: 600px;width: 100%;">
   <div class="card radius-15 p-5">
-    <form action="{% url 'create_recurring_bills' %}" class="mt-2 mb-4" method="post" enctype="multipart/form-data">
+    <form action="{% url 'create_Purchase_order' %}" class="mt-2 mb-4" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="row">
         <div class="col-md-3">
@@ -160,10 +160,10 @@
         </script>
 
         <div class="col-md-3">
-          <input type="radio" name="option" id="organization" onclick="showFields()"> Organization
+          <input type="radio" name="option" value="Organization"  id="organization" onclick="showFields()"> Organization
         </div>
         <div class="col-md-3">
-          <input type="radio" name="option" id="customer" onclick="showFields()"> Customer
+          <input type="radio" name="option" value="Customer" id="customer" onclick="showFields()"> Customer
         </div>
       </div>
 
@@ -216,7 +216,7 @@
             <a href="" data-toggle="modal" data-target="#newcustomer">+ Add New Customer</a>
             <input type="hidden" id="cust_state" value="" readonly >
   
-            <input type="text" id="company_state" value="{{company.state}}" readonly>
+            <input type="hidden" id="company_state" value="{{company.state}}" readonly>
   
           </div>
         </div>
@@ -252,7 +252,7 @@
         </div>
 
         <div class="col-md-6">
-            <select name="srcofsupply" id="srcofsupply" onclick="toggleDateInput()" class="form-control">
+            <select name="srcofsupply" id="srcofsupply" onclick="toggleDateInput()" onselect="calculateTaxAmount()" class="form-control">
                 <option value="[AN] Andaman and Nicobar Islads">[AN] Andaman and Nicobar Islads</option>
                 <option value="[AD] Andhra Predhesh">[AD] Andhra Predhesh</option>
                 <option value="[AR] Arunachal Predesh">[AR] Arunachal Predesh</option>
@@ -412,7 +412,7 @@
                               name='item[]' id='item1'>
                               <option value=" " selected disabled>Select Item</option>
                               {% for i in item %}
-                                <option value="{{i.id}}">{{ i.Name  }} </option>
+                                <option value="{{i.Name}}">{{ i.Name  }} </option>
                               {% endfor %}
                           </select></div>
                   </td>
@@ -423,7 +423,7 @@
                         <option value=" " selected disabled >Select Account</option>
                         <hr>
                         {% for i in account %}
-                            <option value="{{ i.id }} ">{{ i.accountName  }} </option>
+                            <option value="{{ i.accountName }} ">{{ i.accountName  }} </option>
                         {% endfor %}
                       </select>
                     </div>  
@@ -2078,6 +2078,7 @@
 
     
   </div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -2557,7 +2558,7 @@ $(document).on("click","#unitSave",function(){
   $.ajax({
     
     type : 'POST',
-    url:"{% url 'recurbills_unit' %}",
+    url:"{% url 'purchase_unit' %}",
 
     data:{
         unit : $("#unit").val(),      
@@ -2576,7 +2577,7 @@ $(document).on("click","#unitSave",function(){
 function reloadUnit() {
 
   $.ajax({
-    url: "{% url 'unit_dropdown' %}",
+    url: "{% url 'purchase_unit_dropdown' %}",
     type: "GET",
     dataType: "json",
     data: $(this).serialize(),
@@ -2650,7 +2651,7 @@ $(document).on("click","#itemSave",function(){
   $.ajax({
     
     type : 'POST',
-    url:"{% url 'recurbills_item' %}",
+    url:"{% url 'purchase_item' %}",
     
     data:{
         type : itemtype,
@@ -2679,7 +2680,7 @@ $(document).on("click","#itemSave",function(){
 
 function reloadItem() {
   $.ajax({
-    url: "{% url 'item_dropdown' %}",
+    url: "{% url 'purchase_item_dropdown' %}",
     type: "GET",
     dataType: "json",
     data: $(this).serialize(),
@@ -2706,7 +2707,7 @@ $(document).on("click","#accountSave",function(){
   $.ajax({
     
     type : 'POST',
-    url:"{% url 'recurbills_account' %}",
+    url:"{% url 'purchase_account' %}",
     
     data:{
         actype : $("#acct_type").val(),
@@ -2726,7 +2727,7 @@ $(document).on("click","#accountSave",function(){
 
 function reloadAccount() {
   $.ajax({
-    url: "{% url 'account_dropdown' %}",
+    url: "{% url 'purchase_account_dropdown' %}",
     type: "GET",
     dataType: "json",
     data: $(this).serialize(),
@@ -2765,8 +2766,9 @@ $(document).ready(function () {
 
     row.find('.amount').val(rowAmount.toFixed(2));
     row.find('.taxamount').val(taxAmount.toFixed(2));
-
+    
     return rowAmount;
+    calculateTaxAmount();
   }
 
   // Function to calculate the subtotal
@@ -2813,7 +2815,7 @@ function calculateGrandTotal() {
             <select class='form-control border-0 item_select itm' name='item[]' id='item${rowCount}'>
               <option value=" " selected disabled>Select Item</option>
               {% for i in item %}
-                <option value="{{i.id}}">{{ i.Name }}</option>
+                <option value="{{i.Name}}">{{ i.Name }}</option>
               {% endfor %}
             </select>
           </div>
@@ -2825,7 +2827,7 @@ function calculateGrandTotal() {
               <option value=" " selected disabled >Select Account</option>
               <hr>
               {% for i in account %}
-                <option value="{{ i.id }} ">{{ i.accountName }}</option>
+                <option value="{{ i.accountName }} ">{{ i.accountName }}</option>
               {% endfor %}
             </select>
           </div>  
@@ -2891,6 +2893,7 @@ function calculateGrandTotal() {
     $(this).closest('tr').remove();
     calculateSubtotal();
     calculateGrandTotal();
+    calculateTaxAmount();
   });
 
   // Input change event for quantity, rate, and discount
@@ -2900,10 +2903,11 @@ function calculateGrandTotal() {
     calculateSubtotal();
     calculateGrandTotal();
     toggleDateInput();
+    calculateTaxAmount();
   });
 
   $('#shipping').on('input', function () {
-    var shippingAmount = parseFloat($(this).val());
+    var shippingAmount = parseFloat($(this).val());5
     $('#shipping_charge').val(shippingAmount.toFixed(2));
     calculateGrandTotal();
   });
@@ -2944,6 +2948,60 @@ $('#item_table').on('click', '.clone-row', function() {
 
 
 });
+function calculateTaxAmount() {
+        var checkbox = document.getElementById("srcofsupply");
+        var vale=checkbox.value;
+        var srcofsupply = vale; // Replace with the actual value of srcofsupply
+        var companyState = "[KL] Kerala"; // Replace with the actual value of company state
+
+        var subtotal = parseFloat(document.getElementById("subtotal").value);
+        var shipping = parseFloat(document.getElementById("shipping").value);
+        var tax = parseFloat(document.getElementById("total_taxamount").value);
+        
+        var tax_rate = 0.0; // Default tax rate for IGST
+        if (srcofsupply === companyState) {
+            tax_rate =tax; // Tax rate for CGST/SGST
+        }
+
+        var total_taxamount = tax_rate;
+
+        var cgst = 0.00;
+        var sgst = 0.00;
+        var igst = 0.00;
+
+        if (srcofsupply === companyState) {
+            cgst = total_taxamount / 2;
+            sgst = total_taxamount / 2;
+        } else {
+            igst = total_taxamount;
+        }
+
+        document.getElementById("cgst").value = cgst.toFixed(2);
+        document.getElementById("sgst").value = sgst.toFixed(2);
+        document.getElementById("igst").value = igst.toFixed(2);
+
+        if (srcofsupply === companyState) {
+            document.getElementById("tr_igst").style.display = "none";
+            document.getElementById("tr_cgst").style.display = "";
+            document.getElementById("tr_sgst").style.display = "";
+        } else {
+            document.getElementById("tr_igst").style.display = "";
+            document.getElementById("tr_cgst").style.display = "none";
+            document.getElementById("tr_sgst").style.display = "none";
+        }
+
+        document.getElementById("total_taxamount").value = total_taxamount.toFixed(2);
+        var grandtotal = subtotal + total_taxamount + shipping;
+        document.getElementById("grandtotal").value = grandtotal.toFixed(2);
+    }
+
+    // Call the function initially on page load
+    
+
+    // Add event listeners to update tax amounts when subtotal or shipping changes
+    document.getElementById("subtotal").addEventListener("input", calculateTaxAmount);
+    document.getElementById("shipping").addEventListener("input", calculateTaxAmount);
+    
 
 function toggleDateInput() {
       var checkbox = document.getElementById("srcofsupply");
@@ -2961,6 +3019,56 @@ function toggleDateInput() {
         }
     }
   }
+
+  function test(taxamount) {
+        console.log('test333');
+        console.log(taxamount)
+        d = 0;
+        var checkbox = document.getElementById("srcofsupply");
+        var vale=checkbox.value;
+        console.log(pos)
+        console.log('state')
+        console.log(state)
+        console.log('state')
+        console.log('----------')
+        if ( vale === "[KL] Kerala") {
+            console.log(pos);
+            console.log(state);
+            console.log(taxamount);
+            gst = taxamount / 2;
+            console.log(gst);
+            $('#cgst').val(parseFloat(gst.toFixed(2)));
+            $('#sgst').val(parseFloat(gst.toFixed(2)));
+            $('#igst').val(parseFloat(d.toFixed(2)));
+            
+            // document.getElementById('tr_cgst').style= ('display: flex');
+            
+            // document.getElementById('tr_sgst').style= ('display: flex');
+            // document.getElementById('tr_igst').style= ('display: none');
+
+           
+        }
+        else{
+            gst = taxamount ;
+            console.log(gst);
+            $('#cgst').val(parseFloat(d.toFixed(2)));
+            $('#sgst').val(parseFloat(d.toFixed(2)));
+            $('#igst').val(parseFloat(gst.toFixed(2)));
+        }
+
+        if (vale !=  "[KL] Kerala") {
+            console.log(pos);
+            console.log(state);
+            document.getElementById('tr_cgst').style=('display: none');
+            document.getElementById('tr_sgst').style= ('display: none');
+            document.getElementById('tr_igst').style= ('display: block');
+        }
+        else{
+            document.getElementById('tr_cgst').style=('display: block');
+            document.getElementById('tr_sgst').style= ('display: block');
+            document.getElementById('tr_igst').style= ('display: none');
+        }
+    }
 
 </script>
 
