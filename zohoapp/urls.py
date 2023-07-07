@@ -6,6 +6,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 from .views import EmailAttachementView, save_data
 
+
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('register', views.register, name='register'),
@@ -204,6 +206,8 @@ urlpatterns = [
     path('purchase_delet/<int:id>',views.purchase_delet,name='purchase_delet'),
     path('purchase_bill_view/<int:id>',views.purchase_bill_view,name='purchase_bill_view'),
 
+    path('EmailAttachementView_purchase', views.EmailAttachementView_purchase, name='EmailAttachementView_purchase'),
+    path('export_purchase_pdf/<id>',views.export_purchase_pdf,name = "export_purchase_pdf"),
 
 
 

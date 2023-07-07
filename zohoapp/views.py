@@ -14,6 +14,8 @@ from django.views import View
 from .forms import EmailForm
 from django.http import JsonResponse
 from datetime import datetime,date, timedelta
+from num2words import num2words
+
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 import os
@@ -4012,7 +4014,7 @@ def itemdata_challan(request):
 
     
 
-    item = AddItem.objects.get(id=id, user=user)
+    item = AddItem.objects.get(Name=id, user=user)
     name=item.Name
     rate = item.p_price
     place = company.state
@@ -4316,6 +4318,79 @@ def purchase_delet(request,id):
 
     
 def purchase_bill_view(request,id):
+    po=Purchase_Order.objects.all()
+    po_t=Purchase_Order_items.objects.filter(PO=id)
+    po_table=Purchase_Order.objects.get(id=id)
+    company=company_details.objects.get(user_id=request.user.id)
+    po_item=Purchase_Order.objects.get(id=id)
+    context={
+        'po':po,
+        'pot':po_t,
+        'company':company,
+        'po_table':po_table,
+        'po_item':po_item,
+    }
+    return render(request, 'purchase_bill_view.html',context)
 
 
-    return render(request, 'purchase_bill_view.html')
+def EmailAttachementView_purchase(request):
+
+        if request.method == 'POST':
+                
+            subject =request.POST['subject']
+            message = request.POST['message']
+            email = request.POST['email']
+            files = request.FILES.getlist('attach')
+
+            try:
+                mail = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [email])
+                for f in files:
+                    mail.attach(f.name, f.read(), f.content_type)
+                mail.send()
+                return render(request, 'purchasemail.html')
+            except:
+               return render(request, 'purchasemail.html')
+
+        return render(request, 'pdfchallan.html')
+
+
+
+
+def export_purchase_pdf(request,id):
+
+    user = request.user
+    company = company_details.objects.get(user=user)
+    challn_on = Purchase_Order.objects.filter(user=user)
+    challan = Purchase_Order.objects.get(id=id)
+    items = Purchase_Order_items.objects.filter(PO=challan)
+    print(challan.customer_name) 
+    print(challan.customer_name)
+    total = challan.grand_total
+
+    template_path = 'pdfchallan.html'
+    context = {
+        'company': company,
+        'challn_on':challn_on,
+        'challan': challan,
+        'items': items, 
+    }
+    fname=challan.Pur_no
+   
+    # Create a Django response object, and specify content_type as pdftemp_creditnote
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+
+
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response

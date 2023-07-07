@@ -1,13 +1,10 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
-
 {% block content %}
 {% load static %}
 
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 <section  >
-    <div class="row fixed-top  " style="top: 7rem; margin-left: 15rem; position: fixed;" >
      
       <div class="col-md-12 " style=" width: 100%;">
         <div class="col-md-3"><a class="text-white" style="font-size: 2rem;">Mail Invoice</a></div>
@@ -20,20 +17,24 @@
                 </div>
                 {% endif %}
                 
-                <form method="POST" action ="" enctype="multipart/form-data" style="width: 90%;" >
+                <form method="post" action ="{% url 'EmailAttachementView_purchase' %}" enctype="multipart/form-data" style="width: 80%;" >
                   {% csrf_token %}
-                  <input type="text" name="mail" >
-                  <input type="text" name="subject" >
 
-                  <input type="file" name="attach" >
+                  <label class="text-white" for="">Mail To</label>
+                  <input class="form-control" type="text" name="email" >
+                  <label class="text-white" for="">Subject</label>
+                  <input class="form-control" type="text" name="subject" >
+                  <label class="text-white" for="">ATTACH </label>
+                  <input class="form-control" type="file" name="attach" >
+                  <label class="text-white " for="">Messege</label> <br>
+                  <textarea class="form-control" name="messege" id="" cols="105" rows="6"></textarea> <br>
 
-                  <input type="text" name="messege" >
+<center>
+    <button style="margin-bottom: 15rem;" type="submit" class="btn btn-primary">Send Email</button>
 
-                <button style="margin-bottom: 15rem;" type="submit" class="btn btn-primary">Send Email</button>
-                <br><br><br><br><br>
+</center>                <br><br><br><br><br>
                 </form>
               
-                {% endif %}
               </div>
          
         
