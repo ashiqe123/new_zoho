@@ -450,6 +450,7 @@ class Purchase_Order(models.Model):
     vendor_mail = models.CharField(max_length=100,null=True,blank=True)
     vendor_gst_traet = models.CharField(max_length=100,null=True,blank=True)
     vendor_gst_no = models.CharField(max_length=100,null=True,blank=True)
+    
 
     Org_name = models.CharField(max_length=100,null=True,blank=True)
     Org_address = models.CharField(max_length=100,null=True,blank=True)
@@ -481,7 +482,8 @@ class Purchase_Order(models.Model):
     note = models.CharField(max_length=255,null=True,blank=True)
     document=models.FileField(upload_to='doc/purchase_order',null=True,blank=True)
     comments = models.CharField(max_length=255,null=True,blank=True)
-    
+    term=models.CharField(max_length=255,null=True,blank=True)
+    status=models.CharField(max_length=255,default='Draft')
 
 class Purchase_Order_items (models.Model):
 

@@ -96,9 +96,10 @@
         </div>
     </div>
   </div>
+
   <div style="overflow-y: scroll; height: 600px;width: 100%;">
   <div class="card radius-15 p-5">
-    <form action="{% url 'create_Purchase_order' %}" class="mt-2 mb-4" method="post" enctype="multipart/form-data">
+    <form  action="{% url 'edit_Purchase_order' po.id %}" class="mt-2 mb-4" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="row">
         <div class="col-md-3">
@@ -106,7 +107,7 @@
         </div>
         <div class="col-md-6">
           <select name="vendor" id="vendor" class="form-control" >
-            <option value=""></option>
+            <option selected value="{{po.vendor_name}}">{{po.vendor_name}}</option>
             {% for v in vendor %}
             <option value="{{ v.first_name }} {{ v.last_name }} {{v.id}}">{{ v.first_name }} {{ v.last_name }}</option>
             {% endfor %}
@@ -115,30 +116,30 @@
         </div>
       </div>
 
-      <div class="row mt-2 d-none" id="email_row">
+      <div class="row mt-2 " id="email_row">
         <div class="col-md-3">
           <label for="email_inp">Vendor Email</label>
         </div>
         <div class="col-md-6">
-          <input type="text" class="form-control" id="email_inp" name="email_inp">
+          <input type="text" class="form-control" id="email_inp" value="{{po.vendor_mail}}" name="email_inp">
         </div>
       </div>
 
-      <div class="row mt-2 d-none" id="gst_trt_row">
+      <div class="row mt-2 " id="gst_trt_row">
         <div class="col-md-3">
           <label for="gst_trt_inp">GST Treatment</label>
         </div>
         <div class="col-md-6">
-          <input type="text" class="form-control" id="gst_trt_inp" name="gst_trt_inp">
+          <input type="text" class="form-control" value="{{po.vendor_gst_traet}}" id="gst_trt_inp" name="gst_trt_inp">
         </div>
       </div>
 
-      <div class="row mt-2 mb-2 d-none" id="gstin_row">
+      <div class="row mt-2 mb-2 " id="gstin_row">
         <div class="col-md-3">
           <label for="gstin_inp">GST Number</label>
         </div>
         <div class="col-md-6">
-          <input type="text" class="form-control"  id="gstin_inp" name="gstin_inp">
+          <input type="text" class="form-control" value="{{po.vendor_gst_no}}"  id="gstin_inp" name="gstin_inp">
         </div>
       </div>
 
@@ -175,7 +176,7 @@
   
   </div>       
   <div class="col-md-6">
-    <input type="text" id="orgName" class="form-control" name="orgName">
+    <input type="text" id="orgName" class="form-control" value="{{po.Org_name}}" name="orgName">
   </div>
 </div>
 <div class="row mt-2">
@@ -184,7 +185,7 @@
   
   </div>        
   <div class="col-md-6">
-    <input type="text" class="form-control" id="gstNumber" name="gstNumber">
+    <input type="text" class="form-control" id="gstNumber" value="{{po.Org_gst}}"  name="gstNumber">
   </div> 
 </div>     
 
@@ -194,7 +195,7 @@
   
   </div>       
   <div class="col-md-6">
-    <input type="text" class="form-control" id="orgAddress" name="orgAddress">
+    <input type="text" class="form-control" value="{{po.Org_address}}" id="orgAddress" name="orgAddress">
   </div>
 </div>
 
@@ -208,7 +209,7 @@
           </div>
           <div class="col-md-6">
             <select name="custom" id="custom" class="form-control" >
-              <option value=""></option>
+              <option value="{{po.customer_name}}">{{po.customer_name}}</option>
               {% for c in customer %}
               <option value="{{c.id}} {{ c.customerName }} ">{{ c.customerName }}</option>
               {% endfor %}
@@ -227,7 +228,7 @@
 
           </div>
           <div class="col-md-6">
-            <input type="email" id="cemail_inp" class="form-control" name="custMail">
+            <input type="email" id="cemail_inp" value="{{po.customer_mail}}" class="form-control" name="custMail">
           </div>
         </div>
         <div class="row">
@@ -236,7 +237,7 @@
 
           </div>
           <div class="col-md-6">
-            <input class="form-control" type="text" id="custAddress" name="custAddress">
+            <input class="form-control" type="text" value="{{po.customer_address}}" id="custAddress" name="custAddress">
 
           </div>
         </div>
@@ -253,6 +254,7 @@
 
         <div class="col-md-6">
             <select name="srcofsupply" id="srcofsupply" onclick="toggleDateInput()" onselect="calculateTaxAmount()" class="form-control">
+                <option selected value="{{po.sourceofsupply}}">{{po.sourceofsupply}}</option>
                 <option value="[AN] Andaman and Nicobar Islads">[AN] Andaman and Nicobar Islads</option>
                 <option value="[AD] Andhra Predhesh">[AD] Andhra Predhesh</option>
                 <option value="[AR] Arunachal Predesh">[AR] Arunachal Predesh</option>
@@ -304,7 +306,7 @@
         </div>
 
         <div class="col-md-6">
-          <input type="text" class="form-control" value="PO-"  id="prof_name" name="pur_ord">
+          <input type="text" class="form-control" value="{{po.Pur_no}}-"  id="prof_name" name="pur_ord">
         </div>
       </div>
       <div class="row mt-2">
@@ -313,7 +315,7 @@
         </div>
 
         <div class="col-md-6">
-          <input type="text" class="form-control"   id="ref" name="ref">
+          <input type="text" class="form-control" value="{{po.ref}}"  id="ref" name="ref">
         </div>
       </div>
 
@@ -325,7 +327,7 @@
             <label for="date1">Order Date</label>
           </div>
           <div class="col-md-3">
-            <input type="date" class="form-control" id="date1" name="start_date">
+            <input type="date" class="form-control" value="{{po.Ord_date|date:'Y-m-d' }}" id="date1" name="start_date">
           </div>
       </div>
       <div class="row mt-2">
@@ -333,7 +335,7 @@
           <label for="date2">Expected Delivery On</label>
         </div>
         <div class="col-md-3">
-          <input type="date" class="form-control" id="date2" name="end_date">
+          <input type="date"  value="{{po.exp_date|date:'Y-m-d' }}" class="form-control" id="date2" name="end_date">
         </div>
         
       </div>
@@ -345,12 +347,12 @@
         <div class="col-md-6">
           <div class="d-flex">
             <select class="form-control" id="terms" name="terms">
-              
+              <option selected value="{{po.payment_terms}}">{{po.payment_terms}}</option>
               {% for p in payment %}
               
                 <option selected value="{{p.id}} {{p.Terms}} {{ p.Days}}">{{p.Terms}} {{p.Days}}</option>
               {% endfor %}
-              <option value="" selected></option>
+              
             </select>
 
           </div> 
@@ -381,15 +383,6 @@
         </div>
       </div>
 
-      <div class="row mt-2 mb-2 d-none" id="cgstin_row">
-        <div class="col-md-3">
-          <label for="gstin_inp">GST Number</label>
-        </div>
-        <div class="col-md-6">
-          <input type="text" class="form-control"  id="cgstin_inp" name="cgstin_inp" >
-        </div>
-      </div>
-
       <div class="row mt-2">
         <div class="col-md-12 table-responsive-md mt-3">
           <table class="table table-bordered" id="item_table" onclick='toggleDateInput()'>
@@ -405,22 +398,23 @@
               </tr>
             </thead>
             <tbody>
-              <tr id="row1">
+                {% for i in po_table %}
+              <tr id="row{{forloop.counter}}">
                   <td style="width: 10%;">
                       <div ><select
                               class='form-control  border-0 item_select itm'
-                              name='item[]' id='item1'>
-                              <option value=" " selected disabled>Select Item</option>
+                              name='item[]' id='item{{forloop.counter}}'>
+                              <option value="{{i.item}}">{{i.item}}</option>
                               {% for i in item %}
                                 <option value="{{i.Name}}">{{ i.Name  }} </option>
                               {% endfor %}
                           </select></div>
                   </td>
                   
-                  <td  style="width: 15%;">
+                  <td  style="width: 10%;">
                     <div class="d-flex">
-                      <select name='account[]' id="account1" class="form-control acnt">
-                        <option value=" " selected disabled >Select Account</option>
+                      <select name='account[]' id="account{{forloop.counter}}" class="form-control acnt">
+                        <option value="{{i.account}} " selected  >{{i.account}}</option>
                         <hr>
                         {% for i in account %}
                             <option value="{{ i.accountName }} ">{{ i.accountName  }} </option>
@@ -428,20 +422,23 @@
                       </select>
                     </div>  
                   </td>
-                  <td style="width: 13%;" class='text-right'><input type='number' id='qty1'
+                  <td style="width: 13%;" class='text-right'><input type='number' id='qty{{forloop.counter}}'
                           class=' text-right qty form-control' name='quantity[]'
-                          value='0'>
+                          value='{{i.quantity}}'>
                   </td>
-                  <td style="width: 15%;" class='text-right'><input type='number' id='rate1'
+                  <td style="width: 15%;" class='text-right'><input type='number' id='rate{{forloop.counter}}'
                           class=' text-right rate form-control' name='rate[]'
-                          value='0'>
+                          value='{{i.rate}}'>
                   </td>
-                  <td style="width: 12%;" class='text-right'><input type='number' id='discount1'
+                  <td style="width: 12%;" class='text-right'><input type='number' id='discount{{forloop.counter}}'
                           class=' text-right discount form-control' name='discount[]'
-                          value='0'>
+                          value='{{i.discount}}'>
                   </td>
-                  <td style="width: 15%;" class='text-right'> <select name='tax[]' id='tax1'
+                  <td style="width: 15%;" class='text-right'> <select name='tax[]' id='tax{{forloop.counter}}'
                           class='form-control  text-right border-0 tax'>
+                        
+                          <option value="{{i.tax}}">{{i.tax}}</option>
+            
                           <optgroup class="text-center" label="GST">
                             <option value="0">Non Taxable</option>
                             <option value="0">0% GST(0%)</option>
@@ -460,13 +457,13 @@
                             </optgroup>
                       </select></td>
                   <td style="display: none;">
-                      <input type="number" name='taxamount[]' id="taxamount1"
+                      <input type="number" name='taxamount[]' id="taxamount{{forloop.counter}}"
                           class="form-control taxamount" />
                   </td>
-                  <td style="width: 15%;" class='text-right'><input type='number' id='amount1'
+                  <td style="width: 20%;" class='text-right'><input type='number' id='amount{{forloop.counter}}'
                           class=' text-right form-control amount' name='amount[]'
-                          value='0.00'></td>
-                  <td class='text-center'><button type='button' id='del_btn1'
+                          value="{{i.amount}}"></td>
+                  <td class='text-center'><button type='button' id='del_btn{{forloop.counter}}'
                           class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row'
                           style='width:30px'>X</button></td>
                           <td class='text-center'>
@@ -474,6 +471,7 @@
                             </button>
                           </td>
  </tr>
+ {% endfor %}
       </tbody>
     </table>
     <button type="button" class="btn btn-sm text-white" style="background-color: rgb(210, 132, 30);" id="add-row">Add another line</button>
@@ -485,43 +483,43 @@
 
             <label for="">Customer Notes</label>
             <textarea name="customer_note" id="" cols="8" rows="8"
-                placeholder=" Will be Displayed on the Purchase Order"></textarea>
+                placeholder=" Will be Displayed on the Purchase Order">{{po.note}}</textarea>
         </div>
         <div class="col-sm-6 " >
             <table class=" table  text-white" style="background-color: rgba(58, 57, 57, 0.8);">
                 <tr>
                     <td>Sub Total</td>
                     <td></td>
-                    <td><input type="number" id="subtotal" name="subtotal" step="any" value="0.00"
+                    <td><input type="number" id="subtotal" name="subtotal" step="any" value="{{po.sub_total}}"
                             class="bg-transparent border-0 text-right subtotal text-white"></td>
                 </tr>
                 <tr style="display: none;" id="tr_igst">
                     <td>IGST</td>
                     <td></td>
-                    <td><input type="number" id='igst' name="igst" step="any" value="0.00"
+                    <td><input type="number" id='igst' name="igst" step="any" value="{{po.igst}}"
                             class="form-control bg-transparent border-0 text-right igst  text-white" ></td>
                 </tr>
                 <tr style="display: none;" id="tr_cgst">
                     <td>CGST</td>
                     <td></td>
-                    <td><input type="number" id='cgst' name="cgst" step="any" value="0.00"
+                    <td><input type="number" id='cgst' name="cgst" step="any" value="{{po.cgst}}"
                             class="form-control bg-transparent border-0 text-right cgst text-white" ></td>
                 </tr>
                 <tr style="display: none;" id="tr_sgst">
                     <td>SGST</td>
                     <td></td>
-                    <td><input type="number" id='sgst' name="sgst" step="any" value="0.00"
+                    <td><input type="number" id='sgst' name="sgst" step="any" value="{{po.sgst}}"
                             class="form-control bg-transparent border-0 text-right sgst  text-white" ></td>
                 </tr>
                 <tr>
                     <td>Tax Amount</td>
                     <td></td>
-                    <td><input type="number" id="total_taxamount" name="total_taxamount" step="any" value="0.00" 
+                    <td><input type="number" id="total_taxamount" name="total_taxamount" step="any" value="{{po.tax_amount}}" 
                         class="total_taxamount form-control bg-transparent border-0 text-right  text-white"></td>
                 </tr>
                 <tr>
                     <td>Shipping Charges</td>
-                    <td><input type="number" class="form-control " id="shipping" value="0"> </td>
+                    <td><input type="number" class="form-control " id="shipping" value="{{po.shipping_charge}}"> </td>
                     <td><input type="text" id="shipping_charge" name="shipping_charge" step="any" value="0.00" 
                         class="form-control bg-transparent border-0 text-right shipping_charge  text-white"></td>
                 </tr>
@@ -533,7 +531,7 @@
                 <tr>
                     <th>Total ( &#x20B9; )</th>
                     <th></th>
-                    <th><input type="number" id="grandtotal" name="grandtotal" step="any" value="0.00" 
+                    <th><input type="number" id="grandtotal" name="grandtotal" step="any" value="{{po.grand_total}}" 
                             class="form-control bg-transparent border-0 text-right grandtotal  text-white"></th>
                 </tr>
             </table>
@@ -544,7 +542,7 @@
         <div class="col-md-8 d-flex flex-column w-60 text-white">
             <label for="">Terms & Conditions</label>
             <textarea name="tearms_conditions" id="" cols="20" rows="5"
-                placeholder=" Enter the terms & conditions of your business to be displayed in your transaction."></textarea>
+                placeholder=" Enter the terms & conditions of your business to be displayed in your transaction.">{{po.term}}</textarea>
         </div>
         <div class="col-md-4 py-5 text-center rounded" style="background-color: rgba(32, 35, 37);">
             <label class="text-white" for="">Attach File(s) to Purchase</label><br>
@@ -556,15 +554,11 @@
 
         </div>
     </div>
-      <div class="row mt-5 mb-3 m-5 ">
-       
-    
-     
-          <input type="submit" class="btn  btn btn-success text-align-center font-weight-bold mt-2 mr-2" 
-                  style="width: 200px; text-align: center ;" value="SAVE" >
-     
-        
-       
+      <div class="row mt-5 mb-3">
+        <center>
+          <input type="submit" class="btn save_btn text-align-center font-weight-bold mt-2" 
+                  style="width: 200px; text-align: center ;" value="SAVE CHANGES" id="save">
+        </center>
       </div>
     </form>
 
@@ -2115,11 +2109,8 @@ $(document).ready(function() {
 
             success: function(data) {
               // console.log(data.vendor_email);
-                $("#email_row").removeClass('d-none');
                 $("#email_row").addClass('d-flex');
-                $("#gstin_row").removeClass('d-none');
                 $("#gstin_row").addClass('d-flex');
-                $("#gst_trt_row").removeClass('d-none');
                 $("#gst_trt_row").addClass('d-flex');
 
                 $('#email_inp').val(" " +data.vendor_email);
@@ -2812,6 +2803,7 @@ function calculateGrandTotal() {
 
   $('#add-row').click(function () {
     rowCount++; // Increment row counter
+    console.log(rowCount)
     var newRow = `
       <tr id='row${rowCount}'>
         <td style="width: 10%;">
@@ -2983,6 +2975,7 @@ function calculateTaxAmount() {
         document.getElementById("cgst").value = cgst.toFixed(2);
         document.getElementById("sgst").value = sgst.toFixed(2);
         document.getElementById("igst").value = igst.toFixed(2);
+
 
         if (srcofsupply === companyState) {
             document.getElementById("tr_igst").style.display = "none";

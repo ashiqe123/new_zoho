@@ -208,6 +208,16 @@ urlpatterns = [
 
     path('EmailAttachementView_purchase', views.EmailAttachementView_purchase, name='EmailAttachementView_purchase'),
     path('export_purchase_pdf/<id>',views.export_purchase_pdf,name = "export_purchase_pdf"),
+    path('add_comment/<int:pk>',views.add_comment,name='add_comment'),
+    path('edit/<int:pk>',views.edit,name='edit'),
+    path('change_status/<int:pk>',views.change_status,name='change_status'),
+    path('change_status_draft/<int:pk>',views.change_status_draft,name='change_status_draft'),
+    path('draft/<int:id>',views.draft,name='draft'),
+    path('Approved/<int:id>',views.Approved,name='Approved'),
+
+
+    path('edit_Purchase_order/<int:id>',views.edit_Purchase_order,name='edit_Purchase_order')
+
 
 
 

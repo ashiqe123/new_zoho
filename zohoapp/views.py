@@ -4216,7 +4216,7 @@ def create_Purchase_order(request):
                                     shipping_charge = shipping_charge,
                                     grand_total=grand_total,
                                     note=note,
-                                    comments=terms_con,
+                                    term=terms_con,
                                     company=company,
                                     user = u,typ=typ  )
             purchase.save()
@@ -4256,7 +4256,6 @@ def create_Purchase_order(request):
             grand_total=request.POST['grandtotal']
             note=request.POST['customer_note']
             terms_con = request.POST['tearms_conditions']
-            document = request.POST['file']
             u = User.objects.get(id = request.user.id)
 
             purchase = Purchase_Order(vendor_name=vname,
@@ -4280,17 +4279,20 @@ def create_Purchase_order(request):
                                     shipping_charge = shipping_charge,
                                     grand_total=grand_total,
                                     note=note,
-                                    comments=terms_con,
+                                    term=terms_con,
                                     company=company,
                                     user = u,typ=typ)
             purchase.save()
 
             p_bill = Purchase_Order.objects.get(id=purchase.id)
 
+    
             if len(request.FILES) != 0:
                 p_bill.document=request.FILES['file'] 
                 p_bill.save()
                 print('save')
+
+        
         item = request.POST.getlist("item[]")
         accounts = request.POST.getlist("account[]")
         quantity = request.POST.getlist("quantity[]")
@@ -4351,7 +4353,7 @@ def EmailAttachementView_purchase(request):
             except:
                return render(request, 'purchasemail.html')
 
-        return render(request, 'pdfchallan.html')
+        return render(request, 'purchasemail.html')
 
 
 
@@ -4370,9 +4372,9 @@ def export_purchase_pdf(request,id):
     template_path = 'pdfchallan.html'
     context = {
         'company': company,
-        'challn_on':challn_on,
-        'challan': challan,
-        'items': items, 
+        'pot':challn_on,
+        'po_item': challan,
+        'po_table': items, 
     }
     fname=challan.Pur_no
    
@@ -4394,3 +4396,184 @@ def export_purchase_pdf(request,id):
     if pisa_status.err:
        return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response
+
+
+def add_comment(request,pk):
+    p=Purchase_Order.objects.get(id=pk)
+    if request.method=='POST':
+        comment=request.POST.get('comment')
+        p.comments=comment
+        p.save()
+    return redirect('purchase_bill_view',pk)
+
+def edit(request,pk):
+    vendor=vendor_table.objects.all()
+    cust=customer.objects.filter(user = request.user)
+    payment=payment_terms.objects.all()
+    item=AddItem.objects.all()
+    account=Account.objects.all()
+    unit=Unit.objects.all()
+    sales=Sales.objects.all()
+    purchase=Purchase.objects.all()
+    po=Purchase_Order.objects.get(id=pk)
+    po_tabl=Purchase_Order_items.objects.filter(PO=pk)
+    context={
+        'vendor':vendor,
+        'customer':cust,
+        'payment':payment,
+        'item':item,
+        'account':account,
+        'units':unit,
+        'sales':sales,
+        'purchase':purchase,
+        'po':po,        
+        'po_table':po_tabl,
+    }
+    return render(request,'edit_purchase_order.html',context)
+
+
+def edit_Purchase_order(request,id):
+
+    company = company_details.objects.get(user = request.user)
+    po_id=Purchase_Order.objects.get(id=id)
+    if request.method == 'POST':
+        typ=request.POST.get('option')
+        print('yes')
+        print(typ)
+        if typ=='Organization':
+            po_id.vendor_name = request.POST.get('vendor')
+            po_id.vendor_mail = request.POST.get('email_inp')
+            po_id.vendor_gst_traet = request.POST.get('gst_trt_inp')
+            po_id.vendor_gst_no = request.POST.get('gstin_inp')
+            po_id.typ=typ
+            po_id.Org_name = request.POST.get('orgName')
+            po_id.Org_address = request.POST.get('gstNumber')
+            po_id.Org_gst = request.POST.get('orgAddress')
+            
+            
+
+            po_id.source_supply = request.POST.get('srcofsupply')
+            po_id.Pur_no = request.POST['pur_ord']
+            po_id.ref = request.POST['ref']
+            po_id.payment_terms = request.POST['terms']
+            po_id.Ord_date = request.POST.get('start_date')
+            po_id.exp_date =  request.POST.get('end_date')
+            po_id.sub_total =request.POST['subtotal']
+            po_id.sgst=request.POST['sgst']
+            po_id.cgst=request.POST['cgst']
+            po_id.igst=request.POST['igst']
+            po_id.tax_amount = request.POST['total_taxamount']
+            po_id.shipping_charge= request.POST['shipping_charge']
+            po_id.grand_total=request.POST['grandtotal']
+            po_id.note=request.POST['customer_note']
+            po_id.term = request.POST['tearms_conditions']
+            u = User.objects.get(id = request.user.id)
+
+            
+            po_id.save()
+
+            p_bill = Purchase_Order.objects.get(id=po_id.id)
+
+            if len(request.FILES) != 0:
+                p_bill.document=request.FILES['file'] 
+                p_bill.save()
+                print('save')
+        else:
+            po_id.vendor_name = request.POST.get('vendor')
+            po_id.vendor_mail = request.POST.get('email_inp')
+            po_id.vendor_gst_traet = request.POST.get('gst_trt_inp')
+            po_id.vendor_gst_no = request.POST.get('gstin_inp')
+            po_id.typ=typ
+            
+            
+            
+            po_id.customer_name = request.POST.get('custom')
+            po_id.customer_mail = request.POST.get('custMail')
+            po_id.customer_address = request.POST.get('custAddress')
+
+            po_id.source_supply = request.POST.get('srcofsupply')
+            po_id.Pur_no = request.POST['pur_ord']
+            po_id.ref = request.POST['ref']
+            po_id.payment_terms = request.POST['terms']
+            po_id.Ord_date = request.POST.get('start_date')
+            po_id.exp_date =  request.POST.get('end_date')
+            po_id.sub_total =request.POST['subtotal']
+            po_id.sgst=request.POST['sgst']
+            po_id.cgst=request.POST['cgst']
+            po_id.igst=request.POST['igst']
+            po_id.tax_amount = request.POST['total_taxamount']
+            po_id.shipping_charge= request.POST['shipping_charge']
+            po_id.grand_total=request.POST['grandtotal']
+            po_id.note=request.POST['customer_note']
+            po_id.term = request.POST['tearms_conditions']
+            
+            u = User.objects.get(id = request.user.id)
+
+            
+            po_id.save()
+
+            p_bill = Purchase_Order.objects.get(id=po_id.id)
+
+        if request.FILES.get('file') is not None:
+            po_id.file = request.FILES['file']
+        else:
+            po_id.file = "/static/images/default.jpg"
+        po_id.save()
+        item = request.POST.getlist("item[]")
+        accounts = request.POST.getlist("account[]")
+        quantity = request.POST.getlist("quantity[]")
+        rate = request.POST.getlist("rate[]")
+        tax = request.POST.getlist("tax[]")
+        discount = request.POST.getlist("discount[]")
+        amount = request.POST.getlist("amount[]")
+        obj_dele=Purchase_Order_items.objects.filter(PO=p_bill.id)
+        obj_dele.delete()
+        if len(item)== len(accounts) == len(quantity) == len(rate) == len(discount) == len(tax) == len(amount):
+            mapped = zip(item,accounts, quantity, rate,  tax,discount, amount)
+            mapped = list(mapped)
+            for ele in mapped:
+                
+
+                    created = Purchase_Order_items.objects.get_or_create(item = ele[0],account = ele[1],quantity=ele[2],rate=ele[3],tax=ele[4],discount = ele[5],amount=ele[6],user = u,company = company, PO = p_bill,)
+            
+            print('Done')
+            return redirect('purchase_bill_view',id)
+    return redirect('purchaseView')
+
+def change_status(request,pk):
+    pur=Purchase_Order.objects.get(id=pk)
+    pur.status='Approved'
+    pur.save()
+    return redirect('purchase_bill_view',pk)
+
+def change_status_draft(request,pk):
+    pur=Purchase_Order.objects.get(id=pk)
+    pur.status='Draft'
+    pur.save()
+    return redirect('purchase_bill_view',pk)
+
+def draft(request,id):
+    po_table=Purchase_Order.objects.all()
+    po=Purchase_Order.objects.filter(status='Draft')
+    company=company_details.objects.get(user_id=request.user.id)
+    po_item=Purchase_Order.objects.get(id=id)
+    context={
+        'po':po,
+        'company':company,
+        'po_table':po_table,
+        'po_item':po_item,
+    }
+    return render(request,"purchase_bill_view.html",context)
+
+def Approved(request,id):
+    po_table=Purchase_Order.objects.all()
+    po=Purchase_Order.objects.filter(status='Approved')
+    company=company_details.objects.get(user_id=request.user.id)
+    po_item=Purchase_Order.objects.get(id=id)
+    context={
+        'po':po,
+        'company':company,
+        'po_table':po_table,
+        'po_item':po_item,
+    }
+    return render(request,"purchase_bill_view.html",context)

@@ -126,58 +126,76 @@
                       </div>
                   </header>
                   <div class="invoice-box">
-                      <h1 class="text-dark">Purchase Order</h1>
                       <div class="invoice-header">
-                          <div class="invoice-details text-dark">
-                            <p class="text-dark">Order No#: {{po_item.Pur_no}}</p>
-
-                              <p class="text-dark">Reference #: {{po_item.ref}}</p>
-                              <p class="text-dark">Purchase Date: {{po_item.Ord_date}}</p>
-                              <p class="text-dark">Expect Delivery Date: {{po_item.exp_date}}</p>
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <div class="invoice-details text-dark">
+                                <p class="text-dark">Order No#: {{po_item.Pur_no}}</p>
+    
+                                  <p class="text-dark">Reference #: {{po_item.ref}}</p>
+                                  <p class="text-dark">Purchase Date: {{po_item.Ord_date}}</p>
+                                  <p class="text-dark">Expect Delivery Date: {{po_item.exp_date}}</p>
+                              </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="text-dark">Vendor Name : {{po_item.vendor_name}}</p>
+                                <p class="text-dark">Vendor Mail :{{po_item.vendor_mail}}</p>
+                                <p class="text-dark">Vendor Gst_treart : {{po_item.vendor_gst_traet}}</p>
+                                <p class="text-dark">Vendor Gst_No :{{po_item.vendor_gst_no}}</p>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="client-details">
+                                {% if po_item.customer_name != 'None' %}
+                                   <p class="text-dark">Client Name: {{po_item.Org_name}} </p>
+     
+                                   <p class="text-dark">Address: {{po_item.Org_address}}</p>
+                                   <p class="text-dark">Gst: {{po_item.Org_gst}}</p>
+                                   {% else %}
+                                   <p class="text-dark">Client Name: {{po_item.customer_name}} </p>
+                                   <p class="text-dark">Client Mail: {{po_item.customer_mail}} </p>
+     
+                                   <p class="text-dark">Address: {{po_item.customer_address.}}<br></p>
+                                   {% endif %}
+                               </div>
+                            </div>
                           </div>
-                          <div class="client-details">
-                           {% if po_item.customer_name != 'None' %}
-                              <p class="text-dark">Client Name: {{po_item.Org_name}} </p>
 
-                              <p class="text-dark">Address: {{po_item.Org_address}}</p>
-                              <p class="text-dark">Gst: {{po_item.Org_gst}}</p>
-                              {% else %}
-                              <p class="text-dark">Client Name: {{po_item.customer_name}} </p>
-                              <p class="text-dark">Client Mail: {{po_item.customer_mail}} </p>
 
-                              <p class="text-dark">Address: {{po_item.customer_address.}}<br></p>
-                              {% endif %}
-                          </div>
+           
                       </div>
-                      <table>
-                          <thead>
-                              <tr>
-                                
-                                <th id="th">Product</th>
-                                <th id="th">Account</th>
-                                
-                                  <th id="th">Quantity</th>
-                                  <th id="th">Price</th>
-                                  <th id="th">Discount</th>
-                                  <th id="th">Tax %</th>
-                                  <th id="th"> Total</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                            {% for i in pot %}
-                            <tr>
-                              <td>{{i.item}}</td>
-                              <td>{{i.account}}</td>
-                              <td>{{i.quantity}}</td>
-                              <td>{{i.rate}}</td>
-                              <td>{{i.discount}}</td>
-                              <td>{{i.tax}}</td>
-                              <td>{{i.amount}}</td>
-                            </tr>
-                            {% endfor %}
-
-                        </tbody>
-                      </table>
+                      <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                      
+                                      <th id="th">Product</th>
+                                      <th id="th">Account</th>
+                                      
+                                        <th id="th">Quantity</th>
+                                        <th id="th">Price</th>
+                                        <th id="th">Discount</th>
+                                        <th id="th">Tax %</th>
+                                        <th id="th"> Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                  {% for i in po_table %}
+                                  <tr>
+                                    <td>{{i.item}}</td>
+                                    <td>{{i.account}}</td>
+                                    <td>{{i.quantity}}</td>
+                                    <td>{{i.rate}}</td>
+                                    <td>{{i.discount}}</td>
+                                    <td>{{i.tax}}</td>
+                                    <td>{{i.amount}}</td>
+                                  </tr>
+                                  {% endfor %}
+      
+                              </tbody>
+                            </table>
+                        </div>
+                      </div>
                       
                     <div class="row">
                        <div class="col-sm-8"></div>

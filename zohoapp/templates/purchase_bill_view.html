@@ -1,9 +1,70 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<style>
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 30%;
+  position: fixed;
+  top: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+}
+
+button {
+  margin-top: 10px;
+}
+
+</style>
 
 <script>
+function openModal() {
+  var modal = document.getElementById("commentModal");
+  modal.style.display = "block";
+}
+
+function closeModal() {
+  var modal = document.getElementById("commentModal");
+  modal.style.display = "none";
+}
+
+function submitComment() {
+  var comment = document.getElementById("commentTextarea").value;
+  // Do something with the comment (e.g., send it to the server)
+  console.log(comment);
+  closeModal();
+}
 
     function uplodfile(){
     
@@ -52,17 +113,27 @@
 <section >
       <div class="row">
         
-        <div class="col-md-3" style="border-right: 1px solid white;height: 100vh;">
+        <div class="col-md-4" style="border-right: 1px solid white;height: 100vh;">
           <div class="row">
-            <div class="col-md-4 "><a class="text-white" style="font-size: 1.5rem;">Invoices</a></div>
-            <div class="col-md-5 form-inline justify-content-end" ><a style="color: #ccc;width: 4rem;height: 2rem;margin-left: 5rem;" class="btn btn-success " href="{% url 'add_prod' %}"><i class="fa-solid fa-plus "></i>New</a>
+            <div class="col-md-4 "><a class="text-white" style="font-size: 1.5rem;">Purchase</a></div>
+            <div class="dropdown col-md-2  mt-1">
+              <a class="dropdown-toggle btn btn-primary" href="" data-toggle="dropdown">
+                <i class="fa fa-envelope"></i> Filter
+              </a>
+              <div class="dropdown-menu m-1">
+                <a class="dropdown-item" href="{% url 'draft' po_item.id  %}">Draft</a>
+                <a class="dropdown-item" href="{% url 'Approved' po_item.id  %}">Approved</a>
+              </div>
+            </div>
+
+            <div class="col-md-2 form-inline justify-content-end" ><a style="color: #ccc;width: 4rem;height: 2rem;margin-left: 5rem;" class="btn btn-success " href="{% url 'add_prod' %}"><i class="fa-solid fa-plus "></i>New</a>
              
             </div>
           </div> 
           <table class="table  text-white">
             <thead>
               <tr>
-                <th>Name</th>
+                <th class="text-white">Name</th>
                
               </tr>
               
@@ -73,6 +144,7 @@
               <tr>
      
                 <td onclick="location.href ='{% url 'purchase_bill_view' v.id %}' "><a class="text-white ">{{v.Pur_no}}</a></td>
+                <td>{{v.status}}</td>
              
               </tr>
              
@@ -83,15 +155,31 @@
        
         </div> 
         
-        <div class="col-md-9 " >
+        <div class="col-md-8 " >
           <div class="row" >
-            <div class="col-md-2" ><a class="text-white" style="font-size: 1.5rem;"><h2>{{invoice.invoice_no}}</h2></a></div>
             
             <div class="col-md-7 p-2 bg-light form-inline d-flex align-items-center" style="width: 100%;">
-                <a href="" class="text-dark m-1"><i class="fa fa-pencil"></i>Edit</a>
+                <a href="{% url 'edit' po_item.id %}" class="text-dark m-1"><i class="fa fa-pencil"></i>Edit</a>
                 <a href="{% url 'purchase_delet' po_item.id %}" class="text-dark m-1"><i class="fas fa-record-vinyl"></i>Delete</a>
 
-                <a href="" class="text-dark m-1"><i class="fa fa-share-alt"></i>Share</a>
+                <a href="#" class="text-dark m-1" onclick="openModal()"><i class="fa fa-share-alt"></i> Comment</a>
+
+<!-- Modal -->
+<div id="commentModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+
+    <h2>Your Comment</h2>
+
+    <form method="post" action="{% url 'add_comment' po_item.id %}">
+      {% csrf_token %}
+      <textarea name="comment" id="commentTextarea" >{{po_item.comments}}</textarea>
+      <input type="submit" class="btn btn-success">
+
+    </form>   
+  </div>
+</div>
+
                 <a onclick="printSelectedArea()" class="text-dark m-1"><i class="fas fa-record-vinyl"></i>Print</a>
                 <a href="{% url 'export_purchase_pdf' po_item.id %}" class="text-dark m-1"><i class="fas fa-record-vinyl"></i>PDF</a>
 
@@ -105,7 +193,19 @@
                     <a class="dropdown-item" href="#">Send as SMS</a>
                   </div>
                 </div>
+                <div class="dropdown m-1">
+                  <a class="dropdown-toggle text-dark" href="" data-toggle="dropdown">
+                    <i class="fa fa-envelope"></i> Status
+                  </a>
+                  <div class="dropdown-menu m-1">
+                    {% if po_item.status == 'Draft' %}
+                    <a class="dropdown-item" href="{% url 'change_status' po_item.id %}">Approve</a>
+                    {% else %}
+                    <a class="dropdown-item" href="{% url 'change_status_draft' po_item.id %}">Draft</a>
 
+                    {% endif %}
+                  </div>
+                </div>
               
               
 </div>
@@ -219,7 +319,6 @@
                        </div>
                    </header>
                    <div class="invoice-box">
-                       <h1 class="text-dark">Purchase Order</h1>
                        <div class="invoice-header">
                            <div class="invoice-details text-dark">
                              <p class="text-dark">Order No#: {{po_item.Pur_no}}</p>
@@ -228,6 +327,12 @@
                                <p class="text-dark">Purchase Date: {{po_item.Ord_date}}</p>
                                <p class="text-dark">Expect Delivery Date: {{po_item.exp_date}}</p>
                            </div>
+                           <div class="invoice-details">
+                            <p class="text-dark">Vendor Name : {{po_item.vendor_name}}</p>
+                            <p class="text-dark">Vendor Mail :{{po_item.vendor_mail}}</p>
+                            <p class="text-dark">Vendor Gst_treart : {{po_item.vendor_gst_traet}}</p>
+                            <p class="text-dark">Vendor Gst_No :{{po_item.vendor_gst_no}}</p>
+                        </div>
                            <div class="client-details">
                             {% if po_item.customer_name != 'None' %}
                                <p class="text-dark">Client Name: {{po_item.Org_name}} </p>
