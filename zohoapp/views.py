@@ -14,8 +14,6 @@ from django.views import View
 from .forms import EmailForm
 from django.http import JsonResponse
 from datetime import datetime,date, timedelta
-from num2words import num2words
-
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 import os
@@ -4437,7 +4435,7 @@ def edit_Purchase_order(request,id):
     company = company_details.objects.get(user = request.user)
     po_id=Purchase_Order.objects.get(id=id)
     if request.method == 'POST':
-        typ=request.POST.get('option')
+        typ=request.POST['typ']
         print('yes')
         print(typ)
         if typ=='Organization':
