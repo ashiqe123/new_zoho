@@ -118,7 +118,7 @@ function submitComment() {
             <div class="col-md-4 "><a class="text-white" style="font-size: 1.5rem;">Purchase</a></div>
             <div class="dropdown col-md-2  mt-1">
               <a class="dropdown-toggle btn btn-primary" href="" data-toggle="dropdown">
-                <i class="fa fa-envelope"></i> Filter
+                <i class="fa fa-filter"></i> Filter
               </a>
               <div class="dropdown-menu m-1">
                 <a class="dropdown-item" href="{% url 'purchase_bill_view' po_item.id  %}">All</a>
@@ -164,7 +164,7 @@ function submitComment() {
                 <a href="{% url 'edit' po_item.id %}" class="text-dark m-1"><i class="fa fa-pencil"></i>Edit</a>
                 <a href="{% url 'purchase_delet' po_item.id %}" class="text-dark m-1"><i class="fas fa-record-vinyl"></i>Delete</a>
 
-                <a href="#" class="text-dark m-1" onclick="openModal()"><i class="fa fa-share-alt"></i> Comment</a>
+                <a href="#" class="text-dark m-1" onclick="openModal()"><i class="fa fa-comment-alt"></i> Comment</a>
 
 <!-- Modal -->
 <div id="commentModal" class="modal">
@@ -197,7 +197,7 @@ function submitComment() {
                 </div>
                 <div class="dropdown m-1">
                   <a class="dropdown-toggle text-dark" href="" data-toggle="dropdown">
-                    <i class="fa fa-envelope"></i> Status
+                    <i class="fa fa-status"></i> Status
                   </a>
                   <div class="dropdown-menu m-1">
                     {% if po_item.status == 'Draft' %}

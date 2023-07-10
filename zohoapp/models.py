@@ -494,6 +494,6 @@ class Purchase_Order_items (models.Model):
     account = models.CharField(max_length=100,null=True,blank=True)
     quantity = models.IntegerField(null=True,blank=True)
     rate=models.FloatField(null=True,blank=True)
-    tax = models.FloatField(null=True,blank=True)
+    tax = models.IntegerField()
     discount = models.FloatField(null=True,blank=True)
     amount = models.FloatField(null=True,blank=True)

@@ -105,7 +105,7 @@
           <label style="color: rgb(190, 88, 88);">Vendor Name *</label>
         </div>
         <div class="col-md-6">
-          <select name="vendor" id="vendor" class="form-control" >
+          <select name="vendor" id="vendor" class="form-control  text-dark">
             <option value=""></option>
             {% for v in vendor %}
             <option value="{{ v.first_name }} {{ v.last_name }} {{v.id}}">{{ v.first_name }} {{ v.last_name }}</option>
@@ -120,7 +120,7 @@
           <label for="email_inp">Vendor Email</label>
         </div>
         <div class="col-md-6">
-          <input type="text" class="form-control" id="email_inp" name="email_inp">
+          <input type="text" class="form-control text-dark" id="email_inp" name="email_inp">
         </div>
       </div>
 
@@ -129,7 +129,7 @@
           <label for="gst_trt_inp">GST Treatment</label>
         </div>
         <div class="col-md-6">
-          <input type="text" class="form-control" id="gst_trt_inp" name="gst_trt_inp">
+          <input type="text" class="form-control text-dark" id="gst_trt_inp" name="gst_trt_inp">
         </div>
       </div>
 
@@ -138,7 +138,7 @@
           <label for="gstin_inp">GST Number</label>
         </div>
         <div class="col-md-6">
-          <input type="text" class="form-control"  id="gstin_inp" name="gstin_inp">
+          <input type="text" class="form-control text-dark"  id="gstin_inp" name="gstin_inp">
         </div>
       </div>
 
@@ -207,7 +207,7 @@
             <label style="color: rgb(190, 88, 88);">Customer Name *</label><br>
           </div>
           <div class="col-md-6">
-            <select name="custom" id="custom" class="form-control" >
+            <select name="custom" id="custom" class="form-control text-dark" >
               <option value=""></option>
               {% for c in customer %}
               <option value="{{c.id}} {{ c.customerName }} ">{{ c.customerName }}</option>
@@ -227,7 +227,7 @@
 
           </div>
           <div class="col-md-6">
-            <input type="email" id="cemail_inp" class="form-control" name="custMail">
+            <input type="email" id="cemail_inp" class="form-control text-dark" name="custMail">
           </div>
         </div>
         <div class="row">
@@ -236,7 +236,7 @@
 
           </div>
           <div class="col-md-6">
-            <input class="form-control" type="text" id="custAddress" name="custAddress">
+            <input class="form-control text-dark" type="text" id="custAddress" name="custAddress">
 
           </div>
         </div>
@@ -252,7 +252,7 @@
         </div>
 
         <div class="col-md-6">
-            <select name="srcofsupply" id="srcofsupply" onclick="toggleDateInput()" onselect="calculateTaxAmount()" class="form-control">
+            <select name="srcofsupply" id="srcofsupply" onclick="toggleDateInput()" onselect="calculateTaxAmount()" class="form-control text-dark">
                 <option value="[AN] Andaman and Nicobar Islads">[AN] Andaman and Nicobar Islads</option>
                 <option value="[AD] Andhra Predhesh">[AD] Andhra Predhesh</option>
                 <option value="[AR] Arunachal Predesh">[AR] Arunachal Predesh</option>
@@ -304,7 +304,7 @@
         </div>
 
         <div class="col-md-6">
-          <input type="text" class="form-control" value="PO-"  id="prof_name" name="pur_ord">
+          <input type="text" class="form-control text-dark" value="PO-"  id="prof_name" name="pur_ord">
         </div>
       </div>
       <div class="row mt-2">
@@ -313,7 +313,7 @@
         </div>
 
         <div class="col-md-6">
-          <input type="text" class="form-control"   id="ref" name="ref">
+          <input type="text" class="form-control text-dark"   id="ref" name="ref">
         </div>
       </div>
 
@@ -325,7 +325,7 @@
             <label for="date1">Order Date</label>
           </div>
           <div class="col-md-3">
-            <input type="date" class="form-control" id="date1" name="start_date">
+            <input type="date" class="form-control text-dark" id="date1" name="start_date">
           </div>
       </div>
       <div class="row mt-2">
@@ -333,7 +333,7 @@
           <label for="date2">Expected Delivery On</label>
         </div>
         <div class="col-md-3">
-          <input type="date" class="form-control" id="date2" name="end_date">
+          <input type="date" class="form-control text-dark" id="date2" name="end_date">
         </div>
         
       </div>
@@ -344,7 +344,7 @@
         </div>
         <div class="col-md-6">
           <div class="d-flex">
-            <select class="form-control" id="terms" name="terms">
+            <select class="form-control text-dark" id="terms" name="terms">
               
               {% for p in payment %}
               
@@ -363,36 +363,12 @@
 
       
 
-      <div class="row mt-2 d-none" id="cemail_row">
-        <div class="col-md-3">
-          <label for="cemail_inp">Customer Email</label>
-        </div>
-        <div class="col-md-6">
-          <input type="text" class="form-control"  id="cemail_inp" name="cemail_inp"  >
-        </div>
-      </div>
 
-      <div class="row mt-2 d-none" id="cgst_trt_row">
-        <div class="col-md-3">
-          <label for="gst_trt_inp">GST Treatment</label>
-        </div>
-        <div class="col-md-6">
-          <input type="text" class="form-control" id="cgst_trt_inp" name="cgst_trt_inp"  >
-        </div>
-      </div>
 
-      <div class="row mt-2 mb-2 d-none" id="cgstin_row">
-        <div class="col-md-3">
-          <label for="gstin_inp">GST Number</label>
-        </div>
-        <div class="col-md-6">
-          <input type="text" class="form-control"  id="cgstin_inp" name="cgstin_inp" >
-        </div>
-      </div>
-
+  
       <div class="row mt-2">
         <div class="col-md-12 table-responsive-md mt-3">
-          <table class="table table-bordered" id="item_table" onclick='toggleDateInput()'>
+          <table class="table table-bordered text-dark" id="item_table" onclick='toggleDateInput()'>
             <thead>
               <tr>
                 <th>Item<br><a href="" data-toggle="modal" data-target="#newitem" class="text-capitalize">+ Item</a></th>
@@ -408,7 +384,7 @@
               <tr id="row1">
                   <td style="width: 10%;">
                       <div ><select
-                              class='form-control  border-0 item_select itm'
+                              class='form-control text-dark border-0 item_select itm'
                               name='item[]' id='item1'>
                               <option value=" " selected disabled>Select Item</option>
                               {% for i in item %}
@@ -419,7 +395,7 @@
                   
                   <td  style="width: 15%;">
                     <div class="d-flex">
-                      <select name='account[]' id="account1" class="form-control acnt">
+                      <select name='account[]' id="account1" class="form-control acnt text-dark">
                         <option value=" " selected disabled >Select Account</option>
                         <hr>
                         {% for i in account %}
@@ -429,19 +405,19 @@
                     </div>  
                   </td>
                   <td style="width: 13%;" class='text-right'><input type='number' id='qty1'
-                          class=' text-right qty form-control' name='quantity[]'
+                          class=' text-right qty form-control text-dark' name='quantity[]'
                           value='0'>
                   </td>
                   <td style="width: 15%;" class='text-right'><input type='number' id='rate1'
-                          class=' text-right rate form-control' name='rate[]'
+                          class=' text-right rate form-control text-dark' name='rate[]'
                           value='0'>
                   </td>
-                  <td style="width: 12%;" class='text-right'><input type='number' id='discount1'
-                          class=' text-right discount form-control' name='discount[]'
+                  <td style="width: 12%;" class='text-right text-dark'><input type='number' id='discount1'
+                          class=' text-right discount text-dark form-control' name='discount[]'
                           value='0'>
                   </td>
-                  <td style="width: 15%;" class='text-right'> <select name='tax[]' id='tax1'
-                          class='form-control  text-right border-0 tax'>
+                  <td style="width: 15%;" class='text-right text-dark'> <select name='tax[]' id='tax1'
+                          class='form-control text-dark  text-right border-0 tax'>
                           <optgroup class="text-center" label="GST">
                             <option value="0">Non Taxable</option>
                             <option value="0">0% GST(0%)</option>
@@ -461,10 +437,10 @@
                       </select></td>
                   <td style="display: none;">
                       <input type="number" name='taxamount[]' id="taxamount1"
-                          class="form-control taxamount" />
+                          class="form-control taxamount text-dark" />
                   </td>
                   <td style="width: 15%;" class='text-right'><input type='number' id='amount1'
-                          class=' text-right form-control amount' name='amount[]'
+                          class=' text-right form-control amount text-dark' name='amount[]'
                           value='0.00'></td>
                   <td class='text-center'><button type='button' id='del_btn1'
                           class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row'
@@ -521,9 +497,9 @@
                 </tr>
                 <tr>
                     <td>Shipping Charges</td>
-                    <td><input type="number" class="form-control " id="shipping" value="0"> </td>
+                    <td><input type="number" class="form-control text-dark" id="shipping" value="0"> </td>
                     <td><input type="text" id="shipping_charge" name="shipping_charge" step="any" value="0.00" 
-                        class="form-control bg-transparent border-0 text-right shipping_charge  text-white"></td>
+                        class="form-control bg-transparent border-0 text-right shipping_charge  "></td>
                 </tr>
                 <tr>
                     <td></td>

@@ -25,7 +25,6 @@ from xhtml2pdf.default import DEFAULT_CSS
 
 
 
-
 def index(request):
 
     return render(request,'index.html')
@@ -4171,10 +4170,9 @@ def create_Purchase_order(request):
             org_gst = request.POST.get('gstNumber')
             org_address = request.POST.get('orgAddress')
             
-            cname = request.POST.get('custom')
-            cmail = request.POST.get('custMail')
-            caddress = request.POST.get('custAddress')
-
+            cname = ''
+            cmail = ''
+            caddress = ''
             src_supply = request.POST.get('srcofsupply')
             po = request.POST['pur_ord']
             ref = request.POST['ref']
@@ -4231,9 +4229,9 @@ def create_Purchase_order(request):
             vgst_t = request.POST.get('gst_trt_inp')
             vgst_n = request.POST.get('gstin_inp')
             
-            orgname = request.POST.get('orgName')
-            org_gst = request.POST.get('gstNumber')
-            org_address = request.POST.get('orgAddress')
+            orgname = ''
+            org_gst = ''
+            org_address = ''
             
             cname = request.POST.get('custom')
             cmail = request.POST.get('custMail')
@@ -4308,7 +4306,7 @@ def create_Purchase_order(request):
                     created = Purchase_Order_items.objects.get_or_create(item = ele[0],account = ele[1],quantity=ele[2],rate=ele[3],tax=ele[4],discount = ele[5],amount=ele[6],user = u,company = company, PO = p_bill,)
             
             print('Done')
-            return redirect('purchase_order')
+        return redirect('purchase_order')
     return redirect('purchaseView')
 
 def purchase_delet(request,id):
